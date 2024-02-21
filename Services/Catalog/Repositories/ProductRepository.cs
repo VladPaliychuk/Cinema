@@ -29,8 +29,8 @@ public class ProductRepository : IProductRepository
 
     public async Task DeleteProduct(Guid id)
     {
-        var entity = await GetProductById(id) ?? throw new EntityNotFoundException($"{typeof(Product).Name} with id {id} not found. Can't delete.");
-        //await Task.Run(() => _context.Products.Remove(entity));
+        var entity = await GetProductById(id) 
+                     ?? throw new EntityNotFoundException($"Product with id {id} not found. Can't delete.");
         _context.Products.Remove(entity);
         await _context.SaveChangesAsync();
     }
@@ -38,25 +38,36 @@ public class ProductRepository : IProductRepository
     public async Task<Product> GetProductById(Guid id)
     {
         return await _context.Products.FindAsync(id)
-               ?? throw new EntityNotFoundException($"{typeof(Product).Name} with id {id} not found.");
+               ?? throw new EntityNotFoundException($"Product with id {id} not found.");
     }
 
-    public Task<IEnumerable<Product>> GetProductByCategory(string categoryName)
+    public async Task<IEnumerable<Product>> GetProductsByCategory(string categoryName)
     {
-        throw new NotImplementedException();
+        var productsByCategory = await _context.Products
+            .Where(product => product.Category
+                .ToLower() == categoryName.ToLower())
+            .ToListAsync();
+
+        return productsByCategory 
+               ?? throw new EntityNotFoundException($"Product with category {categoryName} not found.");
     }
 
-    public Task<IEnumerable<Product>> GetProductByName(string name)
+    public async Task<IEnumerable<Product>> GetProductsByName(string name)
     {
-        //return await _context.Products.ToListAsync(name)
-        //?? throw new EntityNotFoundException($"Film with name {name} not found.");
-        throw new NotImplementedException();
+
+        var productsByName = await _context.Products
+            .Where(product => product.Name
+                .ToLower() == name.ToLower())
+            .ToListAsync();
+
+        return productsByName
+               ?? throw new EntityNotFoundException($"Product with name {name} not found.");
     }
 
     public async Task<IEnumerable<Product>> GetProducts()
     {
         return await _context.Products.ToListAsync()
-               ?? throw new Exception($"Couldn't retrieve entities {typeof(Product).Name} ");
+               ?? throw new Exception($"Couldn't retrieve entities Product ");
     }
 
     public async Task UpdateProduct(Product product)
@@ -65,6 +76,7 @@ public class ProductRepository : IProductRepository
         {
             throw new ArgumentNullException($"{nameof(Product)} entity must not be null");
         }
+        
         _context.Entry(product).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }

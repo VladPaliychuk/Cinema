@@ -44,16 +44,31 @@ namespace Catalog.Controllers
             }
         }
 
+        [HttpGet("GetProductByIdAsync {id}")]
+        public async Task<ActionResult<Product>> GetProductByIdAsync(Guid id)
+        {
+            try
+            {
+                var result = await _productRepository.GetProductById(id);
+                _logger.LogInformation($"Отримали всі пости з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductByIdAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+
+        [HttpGet("GetProductsByNameAsync {name}")]
+
+        [HttpGet("GetProductsByCategoryAsync {category}")]
+
         [HttpPost("CreateProductAsync")]
         public async Task<ActionResult> CreateProductAsync([FromBody] Product product)
         {
             try
             {
-                if (product == null)
-                {
-                    _logger.LogInformation($"Ми отримали пустий json зі сторони клієнта");
-                    return BadRequest("Обєкт івенту є null");
-                }
                 if (!ModelState.IsValid)
                 {
                     _logger.LogInformation($"Ми отримали некоректний json зі сторони клієнта");
@@ -66,6 +81,21 @@ namespace Catalog.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductAsync - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+
+        [HttpPut("UpdateProductAsync")]
+        public async Task<ActionResult> UpdateProductAsync([FromBody] Product product)
+        {
+            try
+            {
+                await _productRepository.UpdateProduct(product);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateProductAsync - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
