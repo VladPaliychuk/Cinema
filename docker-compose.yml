@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "CatalogDatabase"
+      POSTGRES_USER: "VladPostgres"
+      POSTGRES_PASSWORD: "VladPostgres"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+
+  catalog:
+    image: ${DOCKER_REGISTRY-}catalog
+    container_name: catalog.Api
+    depends_on:
+      - catalogdb
+    ports:
+      - "5000:80"
+    build:
+      context: .
+      dockerfile: Services/Catalog/Dockerfile
