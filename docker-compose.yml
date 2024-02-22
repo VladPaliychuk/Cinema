@@ -11,8 +11,15 @@ services:
     ports:
       - "5432:5432"
 
-  catalog:
-    image: ${DOCKER_REGISTRY-}catalog
+  basketdb:
+    image: redis:alpine
+    container_name: basketdb
+    restart: always
+    ports:
+        - "6379:6379"
+
+  catalog.api:
+    image: ${DOCKER_REGISTRY-}catalogapi
     container_name: catalog.Api
     depends_on:
       - catalogdb
@@ -20,4 +27,15 @@ services:
       - "5000:80"
     build:
       context: .
-      dockerfile: Services/Catalog/Dockerfile
+      dockerfile: Services/Catalog.API/Dockerfile
+
+  basket.api:
+    image: ${DOCKER_REGISTRY-}basketapi
+    depends_on:
+      - basketdb
+    ports: 
+      - "5001:80"
+    build:
+      context: .
+      dockerfile: Services/Basket.API/Dockerfile
+

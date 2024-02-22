@@ -1,8 +1,16 @@
 version: '3.4'
 
 services:
-  catalog:
+  catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "80"
+
+
+  basket.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

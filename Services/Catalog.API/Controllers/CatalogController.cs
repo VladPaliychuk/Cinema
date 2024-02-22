@@ -1,8 +1,8 @@
 ﻿using Catalog.Data;
 using Catalog.Entities;
-using Catalog.Repositories;
 using Catalog.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Catalog.Controllers
 {
@@ -29,12 +29,13 @@ namespace Catalog.Controllers
         }
 
         [HttpGet("GetAll")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<Product>>> GetAllAsync()
         {
             try
             {
                 var result = await _productRepository.GetProducts();
-                _logger.LogInformation($"Отримали всі пости з бази даних!");
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
                 return Ok(result);
             }
             catch (Exception ex)
@@ -45,12 +46,14 @@ namespace Catalog.Controllers
         }
 
         [HttpGet("GetProductByIdAsync {id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Product>> GetProductByIdAsync(Guid id)
         {
             try
             {
                 var result = await _productRepository.GetProductById(id);
-                _logger.LogInformation($"Отримали всі пости з бази даних!");
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
                 return Ok(result);
             }
             catch (Exception ex)
@@ -60,11 +63,46 @@ namespace Catalog.Controllers
             }
         }
 
-        [HttpGet("GetProductsByNameAsync {name}")]
+        [Route("[action]/{name}", Name = "GetProductsByNameAsync")]
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> GetProductsByNameAsync(string name)
+        {
+            try
+            {
+                var result = await _productRepository.GetProductsByName(name);
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByNameAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
 
-        [HttpGet("GetProductsByCategoryAsync {category}")]
+        [Route("[action]/{category}", Name = "GetProductsByCategoryAsync")]
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> GetProductsByCategoryAsync(string category)
+        {
+            try
+            {
+                var result = await _productRepository.GetProductsByCategory(category);
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByCategoryAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
 
         [HttpPost("CreateProductAsync")]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductAsync([FromBody] Product product)
         {
             try
@@ -86,6 +124,7 @@ namespace Catalog.Controllers
         }
 
         [HttpPut("UpdateProductAsync")]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> UpdateProductAsync([FromBody] Product product)
         {
             try
@@ -101,6 +140,7 @@ namespace Catalog.Controllers
         }
 
         [HttpDelete("DeleteProductAsync {id}")]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductAsync(Guid id)
         {
             try
