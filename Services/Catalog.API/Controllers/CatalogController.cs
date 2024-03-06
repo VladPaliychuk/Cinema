@@ -63,8 +63,8 @@ namespace Catalog.Controllers
             }
         }
 
-        [Route("[action]/{name}", Name = "GetProductsByNameAsync")]
         [HttpGet]
+        [Route("[action]/{name}", Name = "GetProductsByNameAsync")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Product>> GetProductsByNameAsync(string name)

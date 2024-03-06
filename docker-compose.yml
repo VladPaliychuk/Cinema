@@ -11,6 +11,16 @@ services:
     ports:
       - "5432:5432"
 
+  discountdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "DiscountDatabase"
+      POSTGRES_USER: "VladDiscount"
+      POSTGRES_PASSWORD: "VladDiscount"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+
   basketdb:
     image: redis:alpine
     container_name: basketdb
@@ -38,4 +48,15 @@ services:
     build:
       context: .
       dockerfile: Services/Basket.API/Dockerfile
+
+  discount.api:
+    image: ${DOCKER_REGISTRY-}discountapi
+    container_name: discount.Api
+    depends_on:
+      - discountdb
+    ports: 
+      - "5002:80"
+    build:
+      context: .
+      dockerfile: Services/Discount.API/Dockerfile
 
