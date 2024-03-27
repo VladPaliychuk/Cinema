@@ -21,3 +21,10 @@ services:
     ports:
       - "80"
 
+
+  ocelotapigateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

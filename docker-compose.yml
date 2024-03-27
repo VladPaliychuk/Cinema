@@ -3,6 +3,7 @@ version: '3.4'
 services:
   catalogdb:
     image: postgres:latest
+    container_name: catalogdb 
     environment:
       POSTGRES_DB: "CatalogDatabase"
       POSTGRES_USER: "VladPostgres"
@@ -31,6 +32,8 @@ services:
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     container_name: catalog.Api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - catalogdb
     ports:
@@ -38,11 +41,16 @@ services:
     build:
       context: .
       dockerfile: Services/Catalog.API/Dockerfile
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
     depends_on:
       - basketdb
+    environment:
+      - "CacheSettings:ConnectionString=basketdb:6379"
     ports: 
       - "5001:80"
     build:
@@ -59,4 +67,20 @@ services:
     build:
       context: .
       dockerfile: Services/Discount.API/Dockerfile
+
+
+  ocelotapigateway:
+    image: ${DOCKER_REGISTRY-}ocelotapigateway
+    container_name: ocelotapigateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+        - catalog.api
+        - basket.api
+        - discount.api
+    ports:
+     - "8010:80"
+    build:
+      context: .
+      dockerfile: ApiGateway/OcelotAPIGateway/Dockerfile
 
