@@ -1,6 +1,26 @@
 {
   "profiles": {
-    "Catalog": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5105"
+    },
+    "https": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7064;http://localhost:5105"
+    },
+    "Catalog.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -23,7 +43,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "http://+:80"
+        "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
       "publishAllPorts": true
     }

@@ -7,11 +7,14 @@ namespace Catalog.Data
 {
     public class CatalogContext : DbContext
     {
-        public CatalogContext(DbContextOptions<CatalogContext> options) : base(options) { }
+        public CatalogContext(DbContextOptions<CatalogContext> options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
         public DbSet<Product> Products { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=CatalogDatabase;Username=VladPostgres;Password=VladPostgres");
+           // optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=CatalogDatabase;Username=VladPostgres;Password=VladPostgres");
         }
         // protected override void OnModelCreating(ModelBuilder modelBuilder)
         // {

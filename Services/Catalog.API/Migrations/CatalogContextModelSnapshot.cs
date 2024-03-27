@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Catalog.Migrations
+namespace Catalog.API.Migrations
 {
     [DbContext(typeof(CatalogContext))]
     partial class CatalogContextModelSnapshot : ModelSnapshot
