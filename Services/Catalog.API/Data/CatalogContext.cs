@@ -1,7 +1,5 @@
 ﻿using Catalog.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Catalog.Data
 {
@@ -11,7 +9,7 @@ namespace Catalog.Data
         {
             Database.EnsureCreated();
         }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get;}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
            // optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=CatalogDatabase;Username=VladPostgres;Password=VladPostgres");

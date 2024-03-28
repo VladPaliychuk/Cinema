@@ -3,7 +3,6 @@ using Catalog.Entities;
 using Catalog.Exeptions;
 using Catalog.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Catalog.Repositories;
 

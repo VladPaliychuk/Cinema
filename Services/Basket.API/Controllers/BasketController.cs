@@ -13,7 +13,7 @@ public class BasketController : ControllerBase
 
     public BasketController(IBasketRepository repository)
     {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository)); ;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository)); 
     }
 
     [HttpGet("{userName}", Name = "GetBasket")]
