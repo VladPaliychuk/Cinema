@@ -21,6 +21,17 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5433:5432"
+        
+  usercarddb:
+    image: postgres:latest
+    container_name: usercarddb
+    environment:
+      POSTGRES_DB: "UsercardDatabase"
+      POSTGRES_USER: "VladPostgres"
+      POSTGRES_PASSWORD: "VladPostgres"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
 
   basketdb:
     image: redis:alpine
@@ -68,6 +79,21 @@ services:
       context: .
       dockerfile: Services/Discount.API/Dockerfile
 
+  usercard.api:
+    image: ${DOCKER_REGISTRY-}usercardapi
+    container_name: usercard.Api
+    depends_on: 
+      - usercarddb
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5003:80"
+    build:
+      context: .
+      dockerfile: Services/UserCard.API/Dockerfile
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   ocelotapigateway:
     image: ${DOCKER_REGISTRY-}ocelotapigateway
@@ -78,9 +104,9 @@ services:
         - catalog.api
         - basket.api
         - discount.api
+        - usercard.api
     ports:
      - "8010:80"
     build:
       context: .
       dockerfile: ApiGateway/OcelotAPIGateway/Dockerfile
-

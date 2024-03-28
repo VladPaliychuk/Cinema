@@ -20,6 +20,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "80"
+        
+  usercard.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
 
 
   ocelotapigateway:
