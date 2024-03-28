@@ -5,8 +5,7 @@
         public Guid Id { get; set; }
         public string UserName { get; set; }
         public int? Bonuses { get; set; }
-
-        // BillingAddress
+        
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
@@ -19,6 +18,6 @@
         public string? CardName { get; set; }
         public string? CardNumber { get; set; }
         public string? Expiration { get; set; }
-        public string? CVV { get; set; }
+        public string? CVV { get; set; } 
     }
 }
