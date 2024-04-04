@@ -3,6 +3,7 @@ using System;
 using Catalog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Catalog.API.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    partial class CatalogContextModelSnapshot : ModelSnapshot
+    [Migration("20240326143424_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,29 +53,6 @@ namespace Catalog.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e407e3cf-e9bb-4ad2-b623-ca2c2e02b0cd"),
-                            Category = "Horror",
-                            Name = "Very Scary Movie",
-                            Price = 120m
-                        },
-                        new
-                        {
-                            Id = new Guid("a166c338-5dac-4867-ae27-9431a35ad36c"),
-                            Category = "Comedy",
-                            Name = "Very Funny Movie",
-                            Price = 120m
-                        },
-                        new
-                        {
-                            Id = new Guid("97846f14-c173-4240-8c04-6c84c99f081a"),
-                            Category = "Thriller",
-                            Name = "Very Enigmatic Movie",
-                            Price = 150m
-                        });
                 });
 #pragma warning restore 612, 618
         }

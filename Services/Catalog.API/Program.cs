@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+//.Services.AddCors();
+
 builder.Services.AddDbContext<CatalogContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("CatalogDb")));
 
@@ -25,9 +27,22 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
+/*
+app.UseCors(options =>
+    options.WithOrigins("http://localhost:4200")
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+        */
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    /*app.UseCors(options =>
+        options.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+            */
+    
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(
