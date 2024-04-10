@@ -1,0 +1,4 @@
+.navbar div, .navbar > div {
+  border: 1px solid dark;
+}
+
