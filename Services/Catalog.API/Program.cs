@@ -25,24 +25,20 @@ builder.Services.AddSwaggerGen(
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMyOrigin",
+        builder => builder.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
-/*
-app.UseCors(options =>
-    options.WithOrigins("http://localhost:4200")
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-        */
+var app = builder.Build();
+app.UseCors("AllowMyOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    /*app.UseCors(options =>
-        options.WithOrigins("http://localhost:4200")
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-            */
-    
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(

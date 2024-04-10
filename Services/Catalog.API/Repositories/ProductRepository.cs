@@ -42,6 +42,10 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetProductsByCategory(string categoryName)
     {
+        if (string.IsNullOrEmpty(categoryName))
+        {
+            return await _context.Products.ToListAsync();
+        }
         var productsByCategory = await _context.Products
             .Where(product => product.Category
                 .ToLower() == categoryName.ToLower())
@@ -53,7 +57,10 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetProductsByName(string name)
     {
-
+        if (string.IsNullOrEmpty(name))
+        {
+            return await _context.Products.ToListAsync();
+        }
         var productsByName = await _context.Products
             .Where(product => product.Name
                 .ToLower() == name.ToLower())
@@ -62,7 +69,35 @@ public class ProductRepository : IProductRepository
         return productsByName
                ?? throw new EntityNotFoundException($"Product with name {name} not found.");
     }
+    
+    public async Task<IEnumerable<Product>> GetProductsByNameAndCategory(string name, string category)
+    {
+        if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(category))
+        {
+            return await _context.Products.ToListAsync();
+        }
+        var productsByNameAndCategory = await _context.Products
+            .Where(product => product.Name
+                .ToLower() == name.ToLower() && product.Category.ToLower() == category.ToLower())
+            .ToListAsync();
 
+        return productsByNameAndCategory
+               ?? throw new EntityNotFoundException($"Product with name {name} and category {category} not found.");
+    }
+    
+    public async Task<IEnumerable<Product>> SearchProducts(string name = null, string category = null)
+    {
+        var productsByNameAndCategory = await GetProductsByNameAndCategory(name, category);
+        var productsByName = await GetProductsByName(name);
+        var productsByCategory = await GetProductsByCategory(category);
+
+        return productsByNameAndCategory
+            .Concat(productsByName)
+            .Concat(productsByCategory)
+            .GroupBy(p => p.Id)
+            .Select(g => g.First()); // to remove duplicates
+    }
+    
     public async Task<IEnumerable<Product>> GetProducts()
     {
         return await _context.Products.ToListAsync()

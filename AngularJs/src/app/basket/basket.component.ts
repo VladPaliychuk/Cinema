@@ -10,8 +10,8 @@ import { ShoppingCart } from './shopping-cart.model';
   styleUrls: ['./basket.component.css']
 })
 export class BasketComponent implements OnInit {
-  basket: ShoppingCart;
-  userName: string = 'testUser'; // Replace with actual user name
+  basket: ShoppingCart | undefined | null;
+  userName: string = ''; // Replace with actual username
 
   constructor(private basketService: BasketService) { }
 

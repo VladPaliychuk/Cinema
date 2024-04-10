@@ -23,9 +23,36 @@ namespace Catalog.Controllers
         }
 
         [HttpGet("GetTakeSkip")]
-        public ActionResult Get(int take = 10, int skip = 0)
+        public ActionResult Get(int take = 10, int skip = 0, string sortBy = "Id")
         {
-            return Ok(_catalogContext.Products.OrderBy(p => p.Id).Skip(skip).Take(take));
+            if (take < 0 || skip < 0)
+            {
+                return BadRequest("Parameters take and skip should be positive numbers.");
+            }
+
+            try
+            {
+                var products = _catalogContext.Products.AsQueryable();
+
+                switch (sortBy)
+                {
+                    case "Name":
+                        products = products.OrderBy(p => p.Name);
+                        break;
+                    case "Category":
+                        products = products.OrderBy(p => p.Category);
+                        break;
+                    default:
+                        products = products.OrderBy(p => p.Id);
+                        break;
+                }
+
+                return Ok(products.Skip(skip).Take(take));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [HttpGet("GetAll")]
@@ -101,6 +128,27 @@ namespace Catalog.Controllers
             }
         }
 
+        // CatalogController.cs
+
+        [HttpGet]
+        [Route("[action]", Name = "SearchProducts")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> SearchProducts([FromQuery] string name = null, [FromQuery] string category = null)
+        {
+            try
+            {
+                var result = await _productRepository.SearchProducts(name, category);
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі SearchProducts() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
         [HttpPost("CreateProductAsync")]
         [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductAsync([FromBody] Product product)
