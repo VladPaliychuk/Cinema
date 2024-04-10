@@ -22,7 +22,7 @@ export class BasketService {
     return this.http.get<ShoppingCart>(`${this.baseUrl}/${userName}`);
   }
 
-  updateBasket(basket: ShoppingCart | undefined | null): Observable<ShoppingCart> {
+  updateBasket(basket: ShoppingCart): Observable<ShoppingCart> {
     return this.http.post<ShoppingCart>(this.baseUrl, basket);
   }
 

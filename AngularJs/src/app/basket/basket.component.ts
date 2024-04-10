@@ -10,8 +10,13 @@ import { ShoppingCart } from './shopping-cart.model';
   styleUrls: ['./basket.component.css']
 })
 export class BasketComponent implements OnInit {
+<<<<<<< HEAD
   basket: ShoppingCart | undefined | null;
   userName: string = ''; // Replace with actual username
+=======
+  basket: ShoppingCart;
+  userName: string = 'testUser'; // Replace with actual user name
+>>>>>>> origin/master
 
   constructor(private basketService: BasketService) { }
 
