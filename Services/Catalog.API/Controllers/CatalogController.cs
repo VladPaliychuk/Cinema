@@ -128,8 +128,6 @@ namespace Catalog.Controllers
             }
         }
 
-        // CatalogController.cs
-
         [HttpGet]
         [Route("[action]", Name = "SearchProducts")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

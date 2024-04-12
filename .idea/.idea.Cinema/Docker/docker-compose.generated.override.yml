@@ -73,6 +73,24 @@ services:
     - "C:\\Users\\palvl\\source\\repos\\Cinema\\ApiGateway\\OcelotAPIGateway:/app:rw"
     - "C:\\Users\\palvl\\source\\repos\\Cinema:/src:rw"
     working_dir: "/app"
+  user.api:
+    build:
+      context: "C:\\Users\\palvl\\source\\repos\\Cinema"
+      dockerfile: "Services/User.API/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net6.0/User.API.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "userapi:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\palvl\\.nuget\\packages:/root/.nuget/packages"
+    - "C:\\Users\\palvl\\source\\repos\\Cinema\\Services\\User.API:/app:rw"
+    - "C:\\Users\\palvl\\source\\repos\\Cinema:/src:rw"
+    working_dir: "/app"
   usercard.api:
     build:
       context: "C:\\Users\\palvl\\source\\repos\\Cinema"

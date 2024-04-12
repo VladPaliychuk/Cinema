@@ -39,6 +39,17 @@ services:
     restart: always
     ports:
         - "6379:6379"
+          
+  userdb:
+    image: postgres:latest
+    container_name: userdb
+    environment:
+      POSTGRES_DB: "UserDatabase"
+      POSTGRES_USER: "VladPostgres"
+      POSTGRES_PASSWORD: "VladPostgres"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+        - "5435:5432"
 
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
@@ -91,6 +102,23 @@ services:
     build:
       context: .
       dockerfile: Services/UserCard.API/Dockerfile
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  
+  
+  user.api:
+    image: ${DOCKER_REGISTRY-}userapi
+    container_name: user.Api
+    depends_on:
+      - userdb
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5004:80"
+    build:
+      context: .
+      dockerfile: Services/User.API/Dockerfile
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

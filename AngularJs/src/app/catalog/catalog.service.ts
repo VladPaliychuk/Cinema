@@ -48,7 +48,6 @@ export class CatalogService {
         url += `category=${category}`;
       }
     }
-    //TODO: обмеження у кількості виведених продуктів
     return this.http.get<Product[]>(url);
   }
 
