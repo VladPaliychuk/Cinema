@@ -11,7 +11,7 @@ namespace Catalog.API.Migrations
         {
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "Category", "Description", "ImageFile", "Name", "Price", "Summary" },
+                columns: new[] { "Id", "Genre", "Description", "ImageFile", "Name", "Price", "Summary" },
                 values: new object[,]
                 {
                     { new Guid("97846f14-c173-4240-8c04-6c84c99f081a"), "Thriller", null, null, "Very Enigmatic Movie", 150m, null },

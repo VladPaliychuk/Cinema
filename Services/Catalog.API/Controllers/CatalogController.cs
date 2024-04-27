@@ -39,9 +39,6 @@ namespace Catalog.Controllers
                     case "Name":
                         products = products.OrderBy(p => p.Name);
                         break;
-                    case "Category":
-                        products = products.OrderBy(p => p.Category);
-                        break;
                     default:
                         products = products.OrderBy(p => p.Id);
                         break;
@@ -105,44 +102,6 @@ namespace Catalog.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByNameAsync() - {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
-            }
-        }
-
-        [Route("[action]/{category}", Name = "GetProductsByCategoryAsync")]
-        [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Product>> GetProductsByCategoryAsync(string category)
-        {
-            try
-            {
-                var result = await _productRepository.GetProductsByCategory(category);
-                _logger.LogInformation($"Отримали всі фільми з бази даних!");
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByCategoryAsync() - {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
-            }
-        }
-
-        [HttpGet]
-        [Route("[action]", Name = "SearchProducts")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Product>> SearchProducts([FromQuery] string name = null, [FromQuery] string category = null)
-        {
-            try
-            {
-                var result = await _productRepository.SearchProducts(name, category);
-                _logger.LogInformation($"Отримали всі фільми з бази даних!");
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі SearchProducts() - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }

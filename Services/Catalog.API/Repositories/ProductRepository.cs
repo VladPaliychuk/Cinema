@@ -40,21 +40,6 @@ public class ProductRepository : IProductRepository
                ?? throw new EntityNotFoundException($"Product with id {id} not found.");
     }
 
-    public async Task<IEnumerable<Product>> GetProductsByCategory(string categoryName)
-    {
-        if (string.IsNullOrEmpty(categoryName))
-        {
-            return await _context.Products.ToListAsync();
-        }
-        var productsByCategory = await _context.Products
-            .Where(product => product.Category
-                .ToLower() == categoryName.ToLower())
-            .ToListAsync();
-
-        return productsByCategory 
-               ?? throw new EntityNotFoundException($"Product with category {categoryName} not found.");
-    }
-
     public async Task<IEnumerable<Product>> GetProductsByName(string name)
     {
         if (string.IsNullOrEmpty(name))
@@ -70,32 +55,18 @@ public class ProductRepository : IProductRepository
                ?? throw new EntityNotFoundException($"Product with name {name} not found.");
     }
     
-    public async Task<IEnumerable<Product>> GetProductsByNameAndCategory(string name, string category)
+    public async Task<Product> GetProductByName(string name)
     {
-        if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(category))
+        if (string.IsNullOrEmpty(name))
         {
-            return await _context.Products.ToListAsync();
+            return null;
         }
-        var productsByNameAndCategory = await _context.Products
-            .Where(product => product.Name
-                .ToLower() == name.ToLower() && product.Category.ToLower() == category.ToLower())
-            .ToListAsync();
+        var productByName = await _context.Products
+            .FirstOrDefaultAsync(product => product.Name
+                .ToLower() == name.ToLower());
 
-        return productsByNameAndCategory
-               ?? throw new EntityNotFoundException($"Product with name {name} and category {category} not found.");
-    }
-    
-    public async Task<IEnumerable<Product>> SearchProducts(string name = null, string category = null)
-    {
-        var productsByNameAndCategory = await GetProductsByNameAndCategory(name, category);
-        var productsByName = await GetProductsByName(name);
-        var productsByCategory = await GetProductsByCategory(category);
-
-        return productsByNameAndCategory
-            .Concat(productsByName)
-            .Concat(productsByCategory)
-            .GroupBy(p => p.Id)
-            .Select(g => g.First()); // to remove duplicates
+        return productByName
+               ?? throw new EntityNotFoundException($"Product with name {name} not found.");
     }
     
     public async Task<IEnumerable<Product>> GetProducts()

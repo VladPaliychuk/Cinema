@@ -26,6 +26,12 @@ public class UserRepository : IUserRepository
                ?? throw new EntityNotFoundException($"User with id {id} not found.");
     }
 
+    public async Task<Entities.User> GetByEmail(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(x => x.Email == email)
+               ?? throw new EntityNotFoundException($"User with email {email} not found.");
+    }
+    
     public async Task Create(Entities.User user)
     {
         if (user == null)
