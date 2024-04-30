@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Catalog.BLL.Services.Interfaces.Interfaces;
+using Catalog.BLL.Services.Interfaces;
 using Catalog.DAL.Entities;
 using Catalog.DAL.Entities.DTOs;
 using Catalog.DAL.Repositories.Interfaces;
@@ -19,6 +19,9 @@ public class CatalogService : ICatalogService
     private readonly IProductGenreRepository _productGenreRepository;
     private readonly IScreeningRepository _screeningRepository;
     private readonly ISeatRepository _seatRepository;
+    private readonly IDirectorRepository _directorRepository;
+    private readonly IProductDirectorRepository _productDirectorRepository;
+    
 
     public CatalogService(
         IMapper mapper,
@@ -28,7 +31,9 @@ public class CatalogService : ICatalogService
         IGenreRepository genreRepository,
         IProductGenreRepository productGenreRepository,
         IScreeningRepository screeningRepository,
-        ISeatRepository seatRepository)
+        ISeatRepository seatRepository,
+        IDirectorRepository directorRepository,
+        IProductDirectorRepository productDirectorRepository)
     {
         _mapper = mapper;
         _productRepository = productRepository;
@@ -38,6 +43,8 @@ public class CatalogService : ICatalogService
         _productGenreRepository = productGenreRepository;
         _screeningRepository = screeningRepository;
         _seatRepository = seatRepository;
+        _directorRepository = directorRepository;
+        _productDirectorRepository = productDirectorRepository;
     }
     
     public async Task CreateAllRelations(ProductDetails productDetails)
@@ -49,6 +56,9 @@ public class CatalogService : ICatalogService
             Description = productDetails.Product.Description,
             ImageFile = productDetails.Product.ImageFile,
             ReleaseDate = productDetails.Product.ReleaseDate,
+            Duration = productDetails.Product.Duration,
+            Country = productDetails.Product.Country,
+            AgeRestriction = productDetails.Product.AgeRestriction,
             Price = productDetails.Product.Price
         };
 
@@ -77,6 +87,29 @@ public class CatalogService : ICatalogService
             };
 
             await _productActorRepository.Create(productActor);
+        }
+
+        foreach (var director in productDetails.Directors)
+        {
+            var directorEntity = await _directorRepository.GetByName(director.FirstName, director.LastName);
+            if (directorEntity == null)
+            {
+                directorEntity = new Director
+                {
+                    Id = new Guid(),
+                    FirstName = director.FirstName,
+                    LastName = director.LastName
+                };
+                await _directorRepository.Create(directorEntity);
+            }
+            
+            var directorProduct = new ProductDirector
+            {
+                ProductId = product.Id,
+                DirectorId = directorEntity.Id
+            };
+            
+            await _productDirectorRepository.Create(directorProduct);
         }
         
         foreach(var genre in productDetails.Genres)
@@ -148,6 +181,14 @@ public class CatalogService : ICatalogService
             actors.Add(actor);  
         }
         
+        var productDirectors = await _productDirectorRepository.GetByProductId(product.Id.ToString());
+        List<Director> directors = new List<Director>();
+        foreach (var pa in productDirectors)
+        {
+            var director = await _directorRepository.GetById(pa.DirectorId);
+            directors.Add(director);
+        }
+
         var productGenres = await _productGenreRepository.GetByProductId(product.Id.ToString());
         List<Genre> genres = new List<Genre>();
         foreach(var genre in productGenres)
@@ -162,6 +203,7 @@ public class CatalogService : ICatalogService
         {
             Product = _mapper.Map<ProductDto>(product),
             Actors = _mapper.Map<List<ActorDto>>(actors),
+            Directors = _mapper.Map<List<DirectorDto>>(directors),
             Genres =  _mapper.Map<List<GenreDto>>(genres),
             Screenings = _mapper.Map<List<ScreeningDto>>(screenings)
         };

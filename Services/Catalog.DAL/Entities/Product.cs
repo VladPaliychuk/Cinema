@@ -15,9 +15,11 @@ namespace Catalog.DAL.Entities
         public string? Summary { get; set; }
         public string? Description { get; set; }
         public string? ImageFile { get; set; }
-        public string? ReleaseDate { get; set; } // string for simplicity
+        public string? ReleaseDate { get; set; }
         
-        public string Duration { get; set; } // string for simplicity
+        public string Duration { get; set; } 
+        public string Country { get; set; } 
+        public string AgeRestriction { get; set; }
         
         [Required(ErrorMessage = "Це поле обов'язкове")]
         [Column(TypeName = "decimal(18, 2)")]

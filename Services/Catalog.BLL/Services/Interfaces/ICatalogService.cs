@@ -1,7 +1,7 @@
 ﻿using Catalog.DAL.Entities;
 using Catalog.DAL.Entities.DTOs;
 
-namespace Catalog.BLL.Services.Interfaces.Interfaces;
+namespace Catalog.BLL.Services.Interfaces;
 
 public interface ICatalogService
 {

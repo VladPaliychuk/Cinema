@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {Product} from "./product.model";
+import {Product} from "../../core/models/product.model";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class CatalogService {
     return this.http.get<Product[]>(url);
   }
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/GetAll`);
+    return this.http.get<Product[]>(`${this.baseUrl}/GetAllProduct`);
   }
 
   getProductById(id: string): Observable<any> {
@@ -59,7 +59,7 @@ export class CatalogService {
     return this.http.put<Product>(`${this.baseUrl}/UpdateProductAsync`, product);
   }
 
-  deleteProduct(id: number): Observable<Product> {
-    return this.http.delete<Product>(`${this.baseUrl}/DeleteProductAsync/${id}`);
+  deleteProduct(id: string): Observable<Product> {
+    return this.http.delete<Product>(`${this.baseUrl}/DeleteProductAsync ${id}`);
   }
 }

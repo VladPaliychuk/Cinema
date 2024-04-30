@@ -3,14 +3,16 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import {CatalogService} from "./catalog/catalog.service";
-import {CatalogComponent} from "./catalog/catalog.component";
-import {FormsModule} from "@angular/forms";
+import {CatalogService} from "./services/catalog/catalog.service";
+import {CatalogComponent} from "./services/catalog/catalog.component";
+import {FormArray, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from "./core/header/header.component";
-import {HomeComponent} from "./home/home.component";
-import {LoginComponent} from "./login/login.component";
-import {BasketComponent} from "./basket/basket.component";
-import {BasketService} from "./basket/basket.service";
+import {HomeComponent} from "./core/home/home.component";
+import {LoginComponent} from "./core/login/login.component";
+import {MovieCreateComponent} from "./services/movie/movie-create/movie-create.component";
+import {MovieService} from "./services/movie/movie.service";
+import {AdminOfficeComponent} from "./core/personal_office/admin/admin-office.component";
+import {MovieDetailsComponent} from "./services/movie/movie.component";
 
 @NgModule({
   declarations: [
@@ -19,15 +21,19 @@ import {BasketService} from "./basket/basket.service";
     HeaderComponent,
     HomeComponent,
     LoginComponent,
-    BasketComponent
+    MovieCreateComponent,
+    AdminOfficeComponent,
+    MovieDetailsComponent
+    //BasketComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [CatalogService, BasketService],
+  providers: [CatalogService, MovieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

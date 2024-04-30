@@ -17,8 +17,7 @@ public class GenreRepository : IGenreRepository
 
     public async Task<Genre> GetById(Guid id)
     {
-        return await _context.Genres.FindAsync(id)
-            ?? throw new EntityNotFoundException($"Genre with Id {id} not found.");
+        return await _context.Genres.FindAsync(id);
     }
     
     public async Task<Genre> GetByName(string name)

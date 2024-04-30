@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Catalog.BLL.Services.Interfaces.Interfaces;
+using Catalog.BLL.Services.Interfaces;
 using Catalog.DAL.Data;
 using Catalog.DAL.Entities;
 using Catalog.DAL.Entities.DTOs;

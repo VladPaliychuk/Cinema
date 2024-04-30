@@ -14,4 +14,10 @@ export class HeaderComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  onCreate(): void {
+    this.router.navigate(['/admin-office']);
+  }
+
+  protected readonly onclick = onclick;
 }

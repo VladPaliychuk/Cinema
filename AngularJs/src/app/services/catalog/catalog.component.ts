@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CatalogService } from './catalog.service';
-import {Product} from "./product.model";
+import {Product} from "../../core/models/product.model";
 import {NavigationEnd, Router} from "@angular/router";
 import {filter, Subject, takeUntil} from "rxjs";
 
@@ -14,7 +14,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   searchName: string = '';
   searchCategory: string = '';
   page: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 9;
   private unsubscribe$ = new Subject<void>();
 
   constructor(private catalogService: CatalogService, private router: Router) {

@@ -3,9 +3,13 @@
 export interface Product {
   id: string;
   name: string;
-  category: string;
   summary?: string;
   description?: string;
   imageFile?: string;
+  releaseDate: string;
+  duration: string;
+  country: string;
+  ageRestriction: string;
   price: number;
 }
+

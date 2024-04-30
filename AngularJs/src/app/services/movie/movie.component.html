@@ -1,0 +1,32 @@
+<div *ngIf="movie">
+  <h2>{{ movie.product.name }}</h2>
+  <p>{{ movie.product.description }}</p>
+  <p>Release Date: {{ movie.product.releaseDate }}</p>
+  <p>Duration: {{ movie.product.duration }}</p>
+  <p>Country: {{ movie.product.country }}</p>
+  <p>Age Restriction: {{ movie.product.ageRestriction }}</p>
+  <p>Price: {{ movie.product.price }}</p>
+
+  <h3>Genres:</h3>
+  <ul>
+    <li *ngFor="let genre of movie.genres">{{ genre.name }}</li>
+  </ul>
+
+  <h3>Directors:</h3>
+  <ul>
+    <li *ngFor="let director of movie.directors">{{ director.firstName }} {{ director.lastName }}</li>
+  </ul>
+
+  <h3>Actors:</h3>
+  <ul>
+    <li *ngFor="let actor of movie.actors">{{ actor.firstName }} {{ actor.lastName }}</li>
+  </ul>
+
+  <h3>Screenings:</h3>
+  <ul>
+    <li *ngFor="let screening of movie.screenings">{{ screening.startDate }} {{ screening.startTime }}</li>
+  </ul>
+</div>
+<div *ngIf="!movie">
+  <p>No movie details available.</p>
+</div>

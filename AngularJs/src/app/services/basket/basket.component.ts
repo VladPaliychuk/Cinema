@@ -4,19 +4,16 @@ import { Component, OnInit } from '@angular/core';
 import { BasketService } from './basket.service';
 import { ShoppingCart } from './shopping-cart.model';
 
-@Component({
+/*@Component({
   selector: 'app-basket',
   templateUrl: './basket.component.html',
   styleUrls: ['./basket.component.css']
 })
 export class BasketComponent implements OnInit {
-<<<<<<< HEAD
   basket: ShoppingCart | undefined | null;
   userName: string = ''; // Replace with actual username
-=======
   basket: ShoppingCart;
-  userName: string = 'testUser'; // Replace with actual user name
->>>>>>> origin/master
+  userName: string = 'testUser'; // Replace with actual username
 
   constructor(private basketService: BasketService) { }
 
@@ -33,9 +30,9 @@ export class BasketComponent implements OnInit {
         console.error('Error:', error);
       }
     );
-  }
+  }*/
 
-  updateBasket(): void {
+  /*updateBasket(): void {
     this.basketService.updateBasket(this.basket).subscribe(
       data => {
         this.basket = data;
@@ -44,8 +41,8 @@ export class BasketComponent implements OnInit {
         console.error('Error:', error);
       }
     );
-  }
-
+  }*/
+/*
   deleteBasket(): void {
     this.basketService.deleteBasket(this.userName).subscribe(
       () => {
@@ -56,4 +53,4 @@ export class BasketComponent implements OnInit {
       }
     );
   }
-}
+}*/

@@ -1,0 +1,47 @@
+<form [formGroup]="movieForm" (ngSubmit)="createMovie()">
+  <div formGroupName="product">
+    <label>Name: <input formControlName="name" type="text"></label>
+    <label>Summary: <input formControlName="summary" type="text"></label>
+    <label>Description: <input formControlName="description" type="text"></label>
+    <label>ImageFile: <input formControlName="imageFile" type="text"></label>
+    <label>Release Date: <input formControlName="releaseDate" type="text"></label>
+    <label>Duration: <input formControlName="duration" type="text"></label>
+    <label>Country: <input formControlName="country" type="text"></label>
+    <label>Age Restriction <input formControlName="ageRestriction" type="text"></label>
+    <label>Price: <input formControlName="price" type="text"></label>
+  </div>
+
+  <div formArrayName="genres">
+    <div *ngFor="let genre of genres.controls; let i = index" [formGroupName]="i">
+      <label>Genre: <input formControlName="name" type="text"></label>
+    </div>
+    <button (click)="addGenre()">Add Genre</button>
+  </div>
+
+  <div formArrayName="actors">
+    <div *ngFor="let actor of actors.controls; let i = index" [formGroupName]="i">
+      <label>Actor First Name: <input formControlName="firstName" type="text"></label>
+      <label>Actor Last Name: <input formControlName="lastName" type="text"></label>
+    </div>
+    <button (click)="addActor()">Add Actor</button>
+  </div>
+
+  <div formArrayName="directors">
+    <div *ngFor="let director of directors.controls; let i = index" [formGroupName]="i">
+      <label>Director First Name: <input formControlName="firstName" type="text"></label>
+      <label>Director Last Name: <input formControlName="lastName" type="text"></label>
+    </div>
+    <button (click)="addDirector()">Add Director</button>
+  </div>
+
+  <div formArrayName="screenings">
+    <div *ngFor="let screening of screenings.controls; let i = index" [formGroupName]="i">
+      <label>Start Time: <input formControlName="startTime" type="text"></label>
+      <label>Start Date: <input formControlName="startDate" type="text"></label>
+    </div>
+    <button (click)="addScreening()">Add Screening</button>
+  </div>
+
+  <button type="submit">Create Movie</button>
+  <div *ngIf="successMessage">{{ successMessage }}</div>
+</form>

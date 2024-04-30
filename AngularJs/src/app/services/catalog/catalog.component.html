@@ -1,0 +1,17 @@
+<div class="main-grid">
+  <div *ngIf="products.length" class="product-list">
+    <div class="grid-container">
+      <div *ngFor="let product of products" class="product-component">
+        <a [routerLink]="['/movie/', product.name]">
+          <img [src]="product.imageFile" alt="{{ product.name }}">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <button (click)="previousPage()">Previous</button>
+  <span>Page {{ page }}</span>
+  <button (click)="nextPage()">Next</button>
+</div>

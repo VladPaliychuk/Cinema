@@ -1,6 +1,6 @@
 using Catalog.BLL.Configurations;
 using Catalog.BLL.Services;
-using Catalog.BLL.Services.Interfaces.Interfaces;
+using Catalog.BLL.Services.Interfaces;
 using Catalog.DAL.Data;
 using Catalog.DAL.Repositories;
 using Catalog.DAL.Repositories.Interfaces;
@@ -38,6 +38,8 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IActorRepository, ActorRepository>();
 builder.Services.AddScoped<IProductActorRepository, ProductActorRepository>();
 builder.Services.AddScoped<IProductGenreRepository, ProductGenreRepository>();
+builder.Services.AddScoped<IDirectorRepository, DirectorRepository>();
+builder.Services.AddScoped<IProductDirectorRepository, ProductDirectorRepository>();
 
 builder.Services.AddCors(options =>
 {

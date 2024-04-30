@@ -1,0 +1,40 @@
+.main-grid{
+  width:100%;
+
+  display:grid;
+  grid-template-rows: 80px 1fr;
+  justify-content: center;
+  align-content:start;
+
+  margin-top: 30px;
+}
+
+input{
+  padding: 5px 16px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px; /* Adjust the gap between grid items */
+  grid-column-gap: 100px;
+}
+
+.product-component {
+  text-align: center;
+  background-color: #0f1323;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.product-component img {
+  width: 300px; /* Ensure the image does not exceed its container */
+}
+
+.product-component:hover {
+  transform: scale(1.1); /* Increase size on hover */
+}
