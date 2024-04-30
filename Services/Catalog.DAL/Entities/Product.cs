@@ -17,6 +17,8 @@ namespace Catalog.DAL.Entities
         public string? ImageFile { get; set; }
         public string? ReleaseDate { get; set; } // string for simplicity
         
+        public string Duration { get; set; } // string for simplicity
+        
         [Required(ErrorMessage = "Це поле обов'язкове")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
@@ -24,6 +26,7 @@ namespace Catalog.DAL.Entities
         
         [JsonIgnore] public ICollection<ProductActor>? ProductActors { get; set; }
         [JsonIgnore] public ICollection<ProductGenre>? ProductGenres { get; set; }
+        [JsonIgnore] public ICollection<ProductDirector>? ProductDirectors { get; set; }
         [JsonIgnore] public ICollection<Screening>? Screenings { get; set; }
     }
 }
