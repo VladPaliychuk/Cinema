@@ -1,27 +1,37 @@
-﻿using Catalog.Data;
-using Catalog.Entities;
-using Catalog.Repositories.Interfaces;
+﻿using System.Net;
+using Catalog.BLL.Services.Interfaces.Interfaces;
+using Catalog.DAL.Data;
+using Catalog.DAL.Entities;
+using Catalog.DAL.Entities.DTOs;
+using Catalog.DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
-namespace Catalog.Controllers
+namespace Catalog.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
     public class CatalogController : ControllerBase
     {
         private readonly CatalogContext _catalogContext;
-        private readonly IProductRepository _productRepository;
+        
+        private readonly ICatalogService _catalogService;
+        
         private readonly ILogger<CatalogController> _logger;
+        
+        private readonly IProductRepository _productRepository;
+        private readonly IActorRepository _actorRepository;
 
         public CatalogController(CatalogContext catalogContext, IProductRepository productRepository,
-            ILogger<CatalogController> logger)
+            ILogger<CatalogController> logger, ICatalogService catalogService,
+            IActorRepository actorRepository)
         {
             _catalogContext = catalogContext;
             _productRepository = productRepository;
             _logger = logger;
+            _catalogService = catalogService;
+            _actorRepository = actorRepository;
         }
-
+        //TODO change all methods is [Route...] style
         [HttpGet("GetTakeSkip")]
         public ActionResult Get(int take = 10, int skip = 0, string sortBy = "Id")
         {
@@ -52,7 +62,26 @@ namespace Catalog.Controllers
             }
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
+        [Route("[action]/{productName}", Name = "GetProductDetails")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<ProductDetails>> GetProductDetails(string productName)
+        {
+            try
+            {
+                var result = await _catalogService.GetProductDetails(productName);
+                _logger.LogInformation($"Отримали всі фільми з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductDetails() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpGet("GetAllProduct")]
         [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<Product>>> GetAllAsync()
         {
@@ -102,6 +131,72 @@ namespace Catalog.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByNameAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpGet("GetAllActors")]
+        [ProducesResponseType(typeof(IEnumerable<Actor>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<Actor>>> GetAllActorsAsync()
+        {
+            try
+            {
+                var result = await _actorRepository.GetAll();
+                _logger.LogInformation($"Отримали усіх акторів з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetAllActorsAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+
+        [HttpGet("GetProductsByActorName")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsByActorName(string actorName)
+        {
+            try
+            {
+                var result = await _catalogService.GetProductsByActorName(actorName);
+                _logger.LogInformation($"Отримали усі фільми актора {actorName} з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetProductsByActorName - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+
+        [HttpPost("CreateProductActorRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductActorRelation(string productName, string actorName)
+        {
+            try
+            {
+                await _catalogService.CreateProductActorRelation(productName, actorName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductActorRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPost("CreateProductDetail")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductDetail([FromBody] ProductDetails productDetails)
+        {
+            try
+            {
+                await _catalogService.CreateAllRelations(productDetails);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductDetail - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }

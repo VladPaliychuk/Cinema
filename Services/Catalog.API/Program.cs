@@ -1,6 +1,9 @@
-using Catalog.Data;
-using Catalog.Repositories;
-using Catalog.Repositories.Interfaces;
+using Catalog.BLL.Configurations;
+using Catalog.BLL.Services;
+using Catalog.BLL.Services.Interfaces.Interfaces;
+using Catalog.DAL.Data;
+using Catalog.DAL.Repositories;
+using Catalog.DAL.Repositories.Interfaces;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +26,18 @@ builder.Services.AddSwaggerGen(
     }
 );
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+builder.Services.AddScoped<ICatalogService, CatalogService>();
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
+builder.Services.AddScoped<IProductActorRepository, ProductActorRepository>();
+builder.Services.AddScoped<IProductGenreRepository, ProductGenreRepository>();
 
 builder.Services.AddCors(options =>
 {
