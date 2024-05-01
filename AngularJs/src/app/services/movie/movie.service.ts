@@ -13,8 +13,6 @@ export class MovieService {
 
   getMovie(productName: string | null): Observable<Movie> {
     if (!productName) {
-      // Handle the case where productName is null or undefined
-      // For example, you could return an Observable.throw() or handle it in a different way
       throw new Error('productName cannot be null or undefined');
     }
 

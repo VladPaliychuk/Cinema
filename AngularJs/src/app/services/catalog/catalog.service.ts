@@ -17,7 +17,17 @@ export class CatalogService {
     return this.http.get<Product[]>(url);
   }
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/GetAllProduct`);
+    return this.http.get<Product[]>(`${this.baseUrl}/GetAllProducts`);
+  }
+
+  getProductsByActor(actor: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByActorName/${actor}`);
+  }
+  getProductsByDirector(director: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByDirectorName/${director}`);
+  }
+  getProductsByGenre(genre: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByGenre/${genre}`);
   }
 
   getProductById(id: string): Observable<any> {

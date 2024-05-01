@@ -13,6 +13,9 @@ import {MovieCreateComponent} from "./services/movie/movie-create/movie-create.c
 import {MovieService} from "./services/movie/movie.service";
 import {AdminOfficeComponent} from "./core/personal_office/admin/admin-office.component";
 import {MovieDetailsComponent} from "./services/movie/movie.component";
+import {ProductActorComponent} from "./services/catalog/product-actor/product-actor.component";
+import { ProductDirectorComponent } from './services/catalog/product-director/product-director.component';
+import {ProductGenreComponent} from "./services/catalog/product-genre/product-genre.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import {MovieDetailsComponent} from "./services/movie/movie.component";
     LoginComponent,
     MovieCreateComponent,
     AdminOfficeComponent,
-    MovieDetailsComponent
+    MovieDetailsComponent,
+    ProductActorComponent,
+    ProductDirectorComponent,
+    ProductGenreComponent,
     //BasketComponent
   ],
   imports: [

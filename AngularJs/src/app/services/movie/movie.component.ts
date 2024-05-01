@@ -24,10 +24,4 @@ export class MovieDetailsComponent implements OnInit {
       );
     });
   }
-
-  /*ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      this.movie = decodeURIComponent(params.get('productName'));
-    });
-  }*/
 }

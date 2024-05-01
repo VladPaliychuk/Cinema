@@ -9,13 +9,6 @@
   margin-top: 30px;
 }
 
-input{
-  padding: 5px 16px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border-radius: 4px;
-}
-
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

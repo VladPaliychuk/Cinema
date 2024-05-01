@@ -1,4 +1,4 @@
-<div *ngIf="movie">
+<div *ngIf="movie" class="movie-container">
   <h2>{{ movie.product.name }}</h2>
   <p>{{ movie.product.description }}</p>
   <p>Release Date: {{ movie.product.releaseDate }}</p>
@@ -9,18 +9,25 @@
 
   <h3>Genres:</h3>
   <ul>
-    <li *ngFor="let genre of movie.genres">{{ genre.name }}</li>
+    <li *ngFor="let genre of movie.genres">
+      <a [routerLink]="['/movies-by-genre/', genre.name]">{{ genre.name }}</a>
+    </li>
   </ul>
 
   <h3>Directors:</h3>
   <ul>
-    <li *ngFor="let director of movie.directors">{{ director.firstName }} {{ director.lastName }}</li>
+    <li *ngFor="let director of movie.directors">
+      <a [routerLink]="['/movies-by-director/', director.firstName + ' ' + director.lastName]">{{ director.firstName }} {{ director.lastName }}</a>
+    </li>
   </ul>
 
   <h3>Actors:</h3>
   <ul>
-    <li *ngFor="let actor of movie.actors">{{ actor.firstName }} {{ actor.lastName }}</li>
+    <li *ngFor="let actor of movie.actors">
+      <a [routerLink]="['/movies-by-actor/', actor.firstName + ' ' + actor.lastName]">{{ actor.firstName }} {{ actor.lastName }}</a>
+    </li>
   </ul>
+
 
   <h3>Screenings:</h3>
   <ul>

@@ -1,4 +1,4 @@
-<form [formGroup]="movieForm" (ngSubmit)="createMovie()">
+<form [formGroup]="movieForm" (ngSubmit)="createMovie()" class="movie-create-container">
   <div formGroupName="product">
     <label>Name: <input formControlName="name" type="text"></label>
     <label>Summary: <input formControlName="summary" type="text"></label>

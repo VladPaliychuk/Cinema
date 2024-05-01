@@ -62,25 +62,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
       error => console.error('Error fetching products:', error)
     );
   }
-  searchByName(): void {
-    if (this.searchName) {
-      this.catalogService.getProductsByName(this.searchName).subscribe(
-        products => this.products = products,
-        error => console.error('Error fetching products by name:', error)
-      );
-    }
-  }
-
-  searchByCategory(): void {
-    if (this.searchCategory) {
-      this.catalogService.getProductsByCategory(this.searchCategory).subscribe(
-        products => this.products = products,
-        error => console.error('Error fetching products by category:', error)
-      );
-    } else {
-      this.products = [];
-    }
-  }
 
   search(): void {
     if (this.searchName || this.searchCategory) {
