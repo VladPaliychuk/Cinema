@@ -37,24 +37,6 @@ services:
     - "C:\\Users\\palvl\\source\\repos\\Cinema\\Services\\Catalog.API:/app:rw"
     - "C:\\Users\\palvl\\source\\repos\\Cinema:/src:rw"
     working_dir: "/app"
-  discount.api:
-    build:
-      context: "C:\\Users\\palvl\\source\\repos\\Cinema"
-      dockerfile: "Services/Discount.API/Dockerfile"
-      target: "base"
-    command: []
-    entrypoint:
-    - "dotnet"
-    - "/app/bin/Debug/net6.0/Discount.API.dll"
-    environment:
-      DOTNET_USE_POLLING_FILE_WATCHER: "true"
-    image: "discountapi:dev"
-    ports: []
-    volumes:
-    - "C:\\Users\\palvl\\.nuget\\packages:/root/.nuget/packages"
-    - "C:\\Users\\palvl\\source\\repos\\Cinema\\Services\\Discount.API:/app:rw"
-    - "C:\\Users\\palvl\\source\\repos\\Cinema:/src:rw"
-    working_dir: "/app"
   ocelotapigateway:
     build:
       context: "C:\\Users\\palvl\\source\\repos\\Cinema"
