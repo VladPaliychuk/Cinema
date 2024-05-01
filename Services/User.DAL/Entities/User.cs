@@ -1,8 +1,10 @@
-﻿namespace User.API.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace User.DAL.Entities;
 
 public class User
 {
-    //TODO split user on User and Role
+    [Key]
     public Guid Id { get; set; }
     public string Username { get; set; } = null!;
     public string Password { get; set; } = null!;

@@ -11,16 +11,6 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-
-  discountdb:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: "DiscountDatabase"
-      POSTGRES_USER: "VladDiscount"
-      POSTGRES_PASSWORD: "VladDiscount"
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5433:5432"
         
   usercarddb:
     image: postgres:latest
@@ -79,17 +69,6 @@ services:
       context: .
       dockerfile: Services/Basket.API/Dockerfile
 
-  discount.api:
-    image: ${DOCKER_REGISTRY-}discountapi
-    container_name: discount.Api
-    depends_on:
-      - discountdb
-    ports: 
-      - "5002:80"
-    build:
-      context: .
-      dockerfile: Services/Discount.API/Dockerfile
-
   usercard.api:
     image: ${DOCKER_REGISTRY-}usercardapi
     container_name: usercard.Api
@@ -130,9 +109,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
         - catalog.api
-        - basket.api
-        - discount.api
         - usercard.api
+        - user.api
     ports:
      - "8010:80"
     build:

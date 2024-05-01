@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using User.API.Data;
-using User.API.Repositories;
-using User.API.Repositories.Interfaces;
+using User.BLL.Configurations;
+using User.BLL.Services;
+using User.BLL.Services.Interfaces;
+using User.DAL.Data;
+using User.DAL.Repositories;
+using User.DAL.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +14,18 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("UserDb")));
 
-
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(
     c => {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "User.API", Version = "v1" });
     }
 );
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
@@ -28,6 +36,8 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+
+
 
 var app = builder.Build();
 

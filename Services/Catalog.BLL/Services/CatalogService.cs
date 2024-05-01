@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Catalog.BLL.DTOs;
 using Catalog.BLL.Services.Interfaces;
 using Catalog.DAL.Entities;
-using Catalog.DAL.Entities.DTOs;
 using Catalog.DAL.Repositories.Interfaces;
 
 namespace Catalog.BLL.Services;
@@ -9,7 +9,6 @@ namespace Catalog.BLL.Services;
 public class CatalogService : ICatalogService
 {
     //TODO додати емейл розсилку
-    //TODO 
     
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
@@ -246,7 +245,48 @@ public class CatalogService : ICatalogService
         }
 
         var productActors = await _productActorRepository.GetByActorId(actor.Id.ToString());
-        var products = productActors.Select(pa => pa.Product).ToList();
+        List<Product> products = new List<Product>();
+        foreach(var pa in productActors)
+        {
+            var product = await _productRepository.GetProductById(pa.ProductId);
+            products.Add(product);  
+        }
+        return products;
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByDirectorName(string directorName)
+    {
+        string firstName = directorName.Split(' ')[0];
+        string lastName = directorName.Split(' ')[1];
+        
+        var director = await _directorRepository.GetByName(firstName, lastName);
+        
+        if(director == null){throw new Exception("Actor not found.");}
+        
+        var productDirectors = await _productDirectorRepository.GetByDirectorId(director.Id);
+        List<Product> products = new List<Product>();
+        foreach(var pd in productDirectors)
+        {
+            var product = await _productRepository.GetProductById(pd.ProductId);
+            products.Add(product);
+        }
+
+        return products;
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByGenreName(string genreName)
+    {
+        var genre = await _genreRepository.GetByName(genreName);
+        
+        if(genre == null){throw new Exception("Genre not found.");}
+        
+        var productGenres = await _productGenreRepository.GetByGenreId(genre.Id);
+        List<Product> products = new List<Product>();
+        foreach(var pg in productGenres)
+        {
+            var product = await _productRepository.GetProductById(pg.ProductId);
+            products.Add(product);
+        }
 
         return products;
     }

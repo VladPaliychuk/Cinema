@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using User.API.Data;
-using User.API.Repositories.Interfaces;
+using User.BLL.DTOs;
+using User.BLL.Services;
+using User.DAL.Repositories.Interfaces;
 
 namespace User.API.Controllers;
 
@@ -9,20 +10,59 @@ namespace User.API.Controllers;
 [Route("api/v1/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly UserContext _context;
+    private readonly UserService _userService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
     
-    public UserController(UserContext context, IUserRepository userRepository, ILogger<UserController> logger)
+    public UserController(
+        IUserRepository userRepository, 
+        ILogger<UserController> logger,
+        UserService userService
+        )
     {
-        _context = context;
+        _userService = userService;
         _userRepository = userRepository;
         _logger = logger;
     }
+    
+    [HttpPost("Register")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<bool>> RegisterUser([FromBody] UserDto user)
+    {
+        try
+        {
+            bool success = await _userService.Register(user);
+            return Ok(success);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while registering user - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while registering user");
+        }
+    }
+    
+    [HttpPost("Login")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<bool>> Login([FromBody] LoginDto login)
+    {
+        try
+        {
+            bool success = await _userService.Login(login);
+            return Ok(success);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while logging in user - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while logging in user");
+        }
+    }
+
 
     [HttpGet("GetAll")]
-    [ProducesResponseType(typeof(IEnumerable<Entities.User>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<Entities.User>>> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<DAL.Entities.User>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IEnumerable<DAL.Entities.User>>> GetAll()
     {
         try
         {
@@ -37,10 +77,11 @@ public class UserController : ControllerBase
         }
     }
     
-    [HttpGet("GetProductByIdAsync {id}")]
+    [HttpGet]
+    [Route("[action]/{id}", Name = "GetUserById")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(Entities.User), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Entities.User>> GetProductByIdAsync(Guid id)
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<DAL.Entities.User>> GetUserById(Guid id)
     {
         try
         {
@@ -56,8 +97,8 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("CreateUser")]
-    [ProducesResponseType(typeof(Entities.User), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult> CreateUser([FromBody] Entities.User user)
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> CreateUser([FromBody] DAL.Entities.User user)
         {
             try
             {
@@ -72,41 +113,41 @@ public class UserController : ControllerBase
             }
             catch (Exception ex)
             {
-                _logger.LogError("An error occurred while creating user", ex);
+                _logger.LogError($"An error occurred while creating user - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while creating user");
             }
         }
 
-        [HttpPut("UpdateUser")]
-        [ProducesResponseType(typeof(Entities.User), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> UpdateUser([FromBody] Entities.User user)
+    [HttpPut("UpdateUser")]
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> UpdateUser([FromBody] DAL.Entities.User user)
+    {
+        try
         {
-            try
-            {
-                await _userRepository.Update(user);
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("An error occurred while updating user", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating user");
-            }
+            await _userRepository.Update(user);
+            return StatusCode(StatusCodes.Status201Created);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while updating user - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating user");
+        }
+    }
 
-        [HttpDelete("DeleteUser {id}")]
-        [ProducesResponseType(typeof(Entities.User), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> DeleteUser(Guid id)
+    [HttpDelete("DeleteUser {id}")]
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> DeleteUser(Guid id)
+    {
+        try
         {
-            try
-            {
-                await _userRepository.Delete(id);
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(
-                    "An error occurred while deleting user", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting user");
-            }
+            await _userRepository.Delete(id);
+            return StatusCode(StatusCodes.Status201Created);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                $"An error occurred while deleting user - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting user");
+        }
+    }
 }

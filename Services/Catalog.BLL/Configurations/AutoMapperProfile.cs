@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Catalog.BLL.DTOs;
 using Catalog.DAL.Entities;
-using Catalog.DAL.Entities.DTOs;
 
 namespace Catalog.BLL.Configurations;
 
@@ -12,6 +12,8 @@ public class AutoMapperProfile : Profile
         CreateActorMaps();
         CreateGenreMaps();
         CreateScreeningMaps();
+        CreateSeatMaps();
+        CreateDirectorMaps();
     }
     
     private void CreateProductMaps()
@@ -34,5 +36,14 @@ public class AutoMapperProfile : Profile
         CreateMap<ScreeningDto, Screening>();
         CreateMap<Screening, ScreeningDto>();
     }
-    
+    private void CreateSeatMaps()
+    {
+        CreateMap<SeatDto, Seat>();
+        CreateMap<Seat, SeatDto>();
+    }
+    private void CreateDirectorMaps()
+    {
+        CreateMap<DirectorDto, Director>();
+        CreateMap<Director, DirectorDto>();
+    }
 }

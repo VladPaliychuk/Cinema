@@ -1,4 +1,4 @@
-﻿namespace Catalog.DAL.Entities.DTOs;
+﻿namespace Catalog.BLL.DTOs;
 
 public class ProductDetails
 {

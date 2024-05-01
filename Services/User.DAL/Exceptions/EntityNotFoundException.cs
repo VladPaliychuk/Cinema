@@ -1,4 +1,4 @@
-﻿namespace User.API.Exceptions;
+﻿namespace User.DAL.Exceptions;
 
 public class EntityNotFoundException : Exception
 {

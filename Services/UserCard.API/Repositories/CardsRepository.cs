@@ -53,6 +53,16 @@ public class CardsRepository : ICardsRepository
             throw new ArgumentNullException($"UserCard entity must not be null");
         }
 
+        // Перевірка наявності користувача з таким же ім'ям користувача
+        var existingUser = await _context.Set<Entities.UserCard>()
+            .FirstOrDefaultAsync(c => c.UserName == card.UserName);
+
+        if (existingUser != null)
+        {
+            // Користувач з таким ім'ям вже існує, тому не створюємо нову картку
+            throw new ArgumentException($"User with username '{card.UserName}' already exists");
+        }
+
         card.Id = Guid.NewGuid();
         _context.Set<Entities.UserCard>().Add(card); 
         await _context.SaveChangesAsync();
@@ -67,7 +77,7 @@ public class CardsRepository : ICardsRepository
         _context.Entry(card).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
-
+    
     public async Task DeleteCard(Guid id)
     {
         var entity = await GetCardById(id) 

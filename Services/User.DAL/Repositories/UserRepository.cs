@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using User.API.Data;
-using User.API.Exceptions;
-using User.API.Repositories.Interfaces;
+using User.DAL.Data;
+using User.DAL.Exceptions;
+using User.DAL.Repositories.Interfaces;
 
-namespace User.API.Repositories;
+namespace User.DAL.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -26,11 +26,24 @@ public class UserRepository : IUserRepository
                ?? throw new EntityNotFoundException($"User with id {id} not found.");
     }
 
-    public async Task<Entities.User> GetByEmail(string email)
+    public async Task<Entities.User?> GetByEmail(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(x => x.Email == email)
-               ?? throw new EntityNotFoundException($"User with email {email} not found.");
+        return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
+    
+    public async Task<Entities.User?> GetByUsername(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+    }
+    
+    public async Task<Entities.User?> GetUserByUsernameOrEmail(string username, string email)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Username == username || u.Email == email);
+
+        return user;
+    }
+
     
     public async Task Create(Entities.User user)
     {
