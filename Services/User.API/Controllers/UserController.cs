@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using User.BLL.DTOs;
 using User.BLL.Services;
+using User.BLL.Services.Interfaces;
 using User.DAL.Repositories.Interfaces;
 
 namespace User.API.Controllers;
@@ -10,14 +11,14 @@ namespace User.API.Controllers;
 [Route("api/v1/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
     
     public UserController(
         IUserRepository userRepository, 
         ILogger<UserController> logger,
-        UserService userService
+        IUserService userService
         )
     {
         _userService = userService;
