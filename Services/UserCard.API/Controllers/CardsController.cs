@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using UserCard.API.Data;
-using UserCard.API.Repositories.Interfaces;
+using UserCard.BLL.DTOs;
+using UserCard.BLL.Services.Interfaces;
+using UserCard.DAL.Repositories.Interfaces;
 
 namespace UserCard.API.Controllers;
 
@@ -9,57 +10,51 @@ namespace UserCard.API.Controllers;
 [Route("api/v1/[controller]")]
 public class CardsController : ControllerBase
 {
-    private readonly ICardsRepository _cardsRepository;
     private readonly ILogger<CardsController> _logger;
+    private readonly IUserCardService _userCardService;
+    private readonly ICardsRepository _cardsRepository;
 
-    public CardsController(ICardsRepository cardsRepository,
-        ILogger<CardsController> logger)
+    public CardsController(
+        IUserCardService userCardService,
+        ILogger<CardsController> logger,
+        ICardsRepository cardsRepository
+        )
     {
-        _cardsRepository = cardsRepository;
+        _userCardService = userCardService;
         _logger = logger;
+        _cardsRepository = cardsRepository;
     }
 
-    [HttpGet("GetCards")]
-    [ProducesResponseType(typeof(IEnumerable<Entities.UserCard>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<Entities.UserCard>>> GetCards()
+    [HttpGet("GetAllUserCards")]
+    [ProducesResponseType(typeof(IEnumerable<UserCardDto>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IEnumerable<UserCardDto>>> GetAllUserCards()
     {
         try
         {
-            // Отримуємо всі картки користувачів з репозиторію
-            var result = await _cardsRepository.GetCards();
+            var userCards = await _userCardService.GetAllUserCards();
+            if (userCards == null)
+            {
+                _logger.LogInformation("Отримано пустий список карток користувачів.");
+                return NotFound();
+            }
+
             _logger.LogInformation("Отримали всі картки користувачів з бази даних.");
-            return Ok(result);
+            return Ok(userCards);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Помилка у методі GetCards: {ex.Message}");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Виникла помилка на сервері.");
-        }
-    }
-
-    [HttpGet("GetShortCards")]
-    [ProducesResponseType(typeof(IEnumerable<Entities.UserCard>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<Entities.UserCard>>> GetShortCards()
-    {
-        try
-        {
-            // Отримуємо короткі картки користувачів з репозиторію
-            var result = await _cardsRepository.GetShortCards();
-            _logger.LogInformation("Отримали короткі картки користувачів з бази даних.");
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Помилка у методі GetShortCards: {ex.Message}");
+            _logger.LogError($"Помилка у методі GetAllUserCards: {ex.Message}");
             return StatusCode(StatusCodes.Status500InternalServerError, "Виникла помилка на сервері.");
         }
     }
 
 
-    [HttpGet("GetCardById/{id}")]
+
+    [HttpGet]
+    [Route("[action]/{id}", Name = "GetCardById")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(Entities.UserCard), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Entities.UserCard>> GetCardById(Guid id)
+    [ProducesResponseType(typeof(DAL.Entities.UserCard), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<DAL.Entities.UserCard>> GetCardById(Guid id)
     {
         try
         {
@@ -74,10 +69,11 @@ public class CardsController : ControllerBase
         }
     }
 
-    [HttpGet("GetCardByUsername/{username}")]
+    [HttpGet]
+    [Route("[action]/{username}", Name = "GetCardByUsername")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(Entities.UserCard), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Entities.UserCard>> GetCardByUsername(string username)
+    [ProducesResponseType(typeof(UserCardDto), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<UserCardDto>> GetCardByUsername(string username)
     {
         try
         {
@@ -92,10 +88,29 @@ public class CardsController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("[action]/{country}", Name = "GetCardsByCountry")]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(UserCardDto), (int)HttpStatusCode.OK)]
+    
+    public async Task<ActionResult<IEnumerable<UserCardDto>>> GetCardsByCountry(string country)
+    {
+        try
+        {
+            var result = await _userCardService.GetUserCardsByCountry(country);
+            _logger.LogInformation($"Отримали картки користувачів з країни: {country}.");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Помилка у методі GetCardsByCountry: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Виникла помилка на сервері.");
+        }
+    }
 
     [HttpPost("CreateCard")]
-    [ProducesResponseType(typeof(Entities.UserCard), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> CreateCard(Entities.UserCard card)
+    [ProducesResponseType(typeof(UserCardDto), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> CreateCard([FromBody] UserCardDto card)
     {
         try
         {
@@ -104,9 +119,9 @@ public class CardsController : ControllerBase
                 _logger.LogInformation($"Ми отримали некоректний json зі сторони клієнта");
                 return BadRequest("Обєкт івенту є некоректним");
             }
-            await _cardsRepository.CreateCard(card);
-            _logger.LogInformation($"Картка користувача з ID: {card.Id} була створена.");
-            return CreatedAtAction(nameof(GetCardById), new { id = card.Id }, card);
+            await _userCardService.CreateUserCard(card);
+            _logger.LogInformation($"Картка користувача з Username: {card.UserName} була створена.");
+            return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)
         {
@@ -117,19 +132,18 @@ public class CardsController : ControllerBase
 
 
     [HttpPut("UpdateCard")]
-    [ProducesResponseType(typeof(Entities.UserCard), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> UpdateCard(Entities.UserCard card)
+    [ProducesResponseType(typeof(DAL.Entities.UserCard), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> UpdateCard([FromBody] UserCardDto card)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
         try
         {
-            await _cardsRepository.UpdateCard(card);
-            _logger.LogInformation($"Картка користувача з ID: {card.Id} була оновлена.");
-            return NoContent();
+            await _userCardService.UpdateUserCard(card);
+            _logger.LogInformation($"Картка користувача з UserName: {card.UserName} була оновлена.");
+            return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)
         {
@@ -139,22 +153,23 @@ public class CardsController : ControllerBase
     }
 
 
-    [HttpDelete("DeleteCard/{id}")]
-    [ProducesResponseType(typeof(Entities.UserCard), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> DeleteCard(Guid id)
+    [HttpDelete]
+    [Route("[action]/{username}", Name = "DeleteCard")]
+    [ProducesResponseType(typeof(DAL.Entities.UserCard), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> DeleteCard(string username)
     {
-        var cardToDelete = await _cardsRepository.GetCardById(id);
+        var cardToDelete = await _userCardService.GetUserCardByUsername(username);
         if (cardToDelete == null)
         {
-            _logger.LogInformation($"Картка користувача з ID: {id} не знайдена.");
+            _logger.LogInformation($"Картка користувача з Username: {username} не знайдена.");
             return NotFound();
         }
 
         try
         {
-            await _cardsRepository.DeleteCard(id);
-            _logger.LogInformation($"Картка користувача з ID: {id} була видалена.");
-            return NoContent();
+            await _userCardService.DeleteUserCard(username);
+            _logger.LogInformation($"Картка користувача з Username: {username} була видалена.");
+            return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)
         {

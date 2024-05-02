@@ -11,17 +11,17 @@ namespace User.API.Controllers;
 [Route("api/v1/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IAuthService _authService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
     
     public UserController(
         IUserRepository userRepository, 
         ILogger<UserController> logger,
-        IUserService userService
+        IAuthService authService
         )
     {
-        _userService = userService;
+        _authService = authService;
         _userRepository = userRepository;
         _logger = logger;
     }
@@ -33,7 +33,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            bool success = await _userService.Register(user);
+            bool success = await _authService.Register(user);
             return Ok(success);
         }
         catch (Exception ex)
@@ -50,7 +50,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            bool success = await _userService.Login(login);
+            bool success = await _authService.Login(login);
             return Ok(success);
         }
         catch (Exception ex)

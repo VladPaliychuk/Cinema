@@ -1,4 +1,4 @@
-﻿namespace UserCard.API.Exceptions;
+﻿namespace UserCard.DAL.Exceptions;
 
 public class EntityNotFoundException : Exception
 {

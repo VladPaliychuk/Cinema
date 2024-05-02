@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using UserCard.API.Data;
-using UserCard.API.Repositories;
-using UserCard.API.Repositories.Interfaces;
+using UserCard.BLL.Configuration;
+using UserCard.BLL.Services;
+using UserCard.BLL.Services.Interfaces;
+using UserCard.DAL.Data;
+using UserCard.DAL.Repositories;
+using UserCard.DAL.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 builder.Services.AddControllers();
 
@@ -21,9 +22,24 @@ builder.Services.AddSwaggerGen(
     }
 );
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
+builder.Services.AddScoped<IUserCardService, UserCardService>();
+
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMyOrigin",
+        builder => builder.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowMyOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

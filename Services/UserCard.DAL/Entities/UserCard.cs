@@ -1,7 +1,10 @@
-﻿namespace UserCard.API.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UserCard.DAL.Entities
 {
     public class UserCard
     {
+        [Key]
         public Guid Id { get; set; }
         public string UserName { get; set; } = null!;
         public int? Bonuses { get; set; }

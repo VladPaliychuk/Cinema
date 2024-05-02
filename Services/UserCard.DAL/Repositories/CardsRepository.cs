@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UserCard.API.Data;
-using UserCard.API.Exceptions;
-using UserCard.API.Repositories.Interfaces;
+using UserCard.DAL.Data;
+using UserCard.DAL.Exceptions;
+using UserCard.DAL.Repositories.Interfaces;
 
-namespace UserCard.API.Repositories;
+namespace UserCard.DAL.Repositories;
 
 public class CardsRepository : ICardsRepository
 {
@@ -16,23 +16,9 @@ public class CardsRepository : ICardsRepository
 
     public async Task<IEnumerable<Entities.UserCard>> GetCards()
     {
-        return await _context.UserCards.ToListAsync()
-               ?? throw new Exception($"Couldn't retrieve entities UserCards ");
+        return await _context.UserCards.ToListAsync();
     }
-
-    public async Task<IEnumerable<Entities.UserCard>> GetShortCards()
-    {
-        return await _context.UserCards
-                   .Select(card => new Entities.UserCard
-                   {
-                       Id = card.Id,
-                       UserName = card.UserName,
-                       Bonuses = card.Bonuses
-                   })
-                   .ToListAsync()
-               ?? throw new Exception("Couldn't retrieve entities UserCards");
-    }
-
+    
     public async Task<Entities.UserCard> GetCardById(Guid id)
     {
         return await _context.UserCards.FindAsync(id)
@@ -46,6 +32,22 @@ public class CardsRepository : ICardsRepository
                ?? throw new EntityNotFoundException($"UserCard with username {username} not found");
     }
 
+    public async Task<IEnumerable<Entities.UserCard>> GetCardsByCountry(string country)
+    {
+        return await _context.UserCards
+                   .Where(card => card.Country == country)
+                   .ToListAsync()
+               ?? throw new EntityNotFoundException($"UserCard with country {country} not found");
+    }
+
+    public async Task<IEnumerable<Entities.UserCard>> GetCardsByState(string state)
+    {
+        return await _context.UserCards
+                   .Where(card => card.State == state)
+                   .ToListAsync()
+               ?? throw new EntityNotFoundException($"UserCard with state {state} not found");
+    }
+
     public async Task CreateCard(Entities.UserCard card)
     {
         if (card == null)
@@ -53,13 +55,11 @@ public class CardsRepository : ICardsRepository
             throw new ArgumentNullException($"UserCard entity must not be null");
         }
 
-        // Перевірка наявності користувача з таким же ім'ям користувача
         var existingUser = await _context.Set<Entities.UserCard>()
             .FirstOrDefaultAsync(c => c.UserName == card.UserName);
 
         if (existingUser != null)
         {
-            // Користувач з таким ім'ям вже існує, тому не створюємо нову картку
             throw new ArgumentException($"User with username '{card.UserName}' already exists");
         }
 

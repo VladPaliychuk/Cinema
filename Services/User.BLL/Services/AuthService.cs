@@ -6,12 +6,12 @@ using User.DAL.Repositories.Interfaces;
 
 namespace User.BLL.Services;
 
-public class UserService : IUserService
+public class AuthService : IAuthService
 {
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
     
-    public UserService(
+    public AuthService(
         IMapper mapper,
         IUserRepository userRepository)
     {

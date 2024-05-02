@@ -29,4 +29,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UserCard.BLL\UserCard.BLL.csproj" />
+    <ProjectReference Include="..\UserCard.DAL\UserCard.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
