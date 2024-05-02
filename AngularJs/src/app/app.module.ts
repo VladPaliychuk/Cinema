@@ -16,6 +16,9 @@ import {MovieDetailsComponent} from "./services/movie/movie.component";
 import {ProductActorComponent} from "./services/catalog/product-actor/product-actor.component";
 import { ProductDirectorComponent } from './services/catalog/product-director/product-director.component';
 import {ProductGenreComponent} from "./services/catalog/product-genre/product-genre.component";
+import { RegistrationComponent } from './core/register/registration/registration.component';
+import {UserService} from "./services/user/user.service";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import {ProductGenreComponent} from "./services/catalog/product-genre/product-ge
     ProductActorComponent,
     ProductDirectorComponent,
     ProductGenreComponent,
+    RegistrationComponent,
     //BasketComponent
   ],
   imports: [
@@ -37,9 +41,10 @@ import {ProductGenreComponent} from "./services/catalog/product-genre/product-ge
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
-  providers: [CatalogService, MovieService],
+  providers: [CatalogService, MovieService, UserService, CatalogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

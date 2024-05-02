@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/authService/auth.service';
 import { Router } from '@angular/router';
-import {BasketService} from "../../services/basket/basket.service";
-import {catchError, tap, throwError} from "rxjs";
+import { UserLoginModel } from "../models/userlogin.model";
 
 @Component({
   selector: 'app-login',
@@ -14,21 +13,36 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router, private basketService: BasketService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   onSubmit(): void {
-    if (this.authService.login(this.username, this.password)) {
-      this.router.navigate(['/home']); // Navigate to home page
+    // Form validation
+    if (!this.username || !this.password) {
+      this.errorMessage = 'Please enter both username and password.';
+      return;
+    }
 
-      /*this.basketService.createBasket(this.username).pipe(
-        tap(() => console.log('Basket created for user:', this.username)),
-        catchError(error => {
-          console.error('Error creating basket:', error);
-          return throwError(error); // Повертаємо потік помилок
-        })).subscribe();*/
-    }
-    else {
-      this.errorMessage = 'Invalid username or password'; // Show error message
-    }
+    const login: UserLoginModel = {
+      username: this.username,
+      password: this.password
+    };
+
+    console.log('Logging in with:', login);
+
+    this.authService.loginUser(login).subscribe(
+      success => {
+        console.log('Login success:', success);
+        if (success) {
+          const redirectUrl = '/catalog';
+          this.router.navigate([redirectUrl]);
+        } else {
+          this.errorMessage = 'Invalid username or password';
+        }
+      },
+      error => {
+        console.error('Error logging in:', error);
+        this.errorMessage = 'An error occurred while logging in. Please try again later.';
+      }
+    );
   }
 }

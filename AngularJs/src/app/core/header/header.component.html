@@ -4,7 +4,7 @@
 
     <div class="col-auto">
       <ul class="navbar-nav ">
-        <li class="nav-item active">
+        <li class="nav-item active" >
           <a class="nav-link" (click)="onCreate()"  [routerLink]="['/admin-office']">Кабінет</a>
         </li>
       </ul>
@@ -18,14 +18,24 @@
 
     <div class="col-auto">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/login']" >Вхід</a>
+        <div>
+          <li class="nav-item" *ngIf="authService.isLoggedIn()">
+            <a class="nav-link" >{{ authService.username }}</a>
+          </li>
+        </div>
+
+        <li class="nav-item" *ngIf="!authService.isLoggedIn()">
+          <a class="nav-link" [routerLink]="['/register']" >Реєстрація</a>
         </li>
+
+
         <li class="nav-item">
           <a class="nav-link" (click)="onLogout()" [routerLink]="['/login']">Вихід</a>
         </li>
       </ul>
     </div>
+
+
 
   </div>
 </nav>

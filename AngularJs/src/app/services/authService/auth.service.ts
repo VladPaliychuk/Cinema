@@ -1,41 +1,56 @@
 import { Injectable } from '@angular/core';
+import { UserService } from "../user/user.service";
+import { Observable, tap } from "rxjs";
+import { User } from "../../core/models/user.model";
+import { UserLoginModel } from "../../core/models/userlogin.model";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user: {username: string, password: string} | null = null;
+  constructor(private userService: UserService, private router: Router) { }
+  public username = '';
   private sessionTimeout: any = null;
   private sessionTimeoutInterval: number = 30 * 60 * 1000; // 30 minutes
 
-  login(username: string, password: string): boolean {
+  loginUser(login: UserLoginModel): Observable<boolean> {
+    return this.userService.loginUser(login).pipe(
+      tap(success => {
+        if (success) {
+          console.log('Login success:', success);
+          this.username = login.username;
+          this.startSessionTimeout();
+          localStorage.setItem('token', 'true');
+        }
+      })
+    );
+  }
 
-    localStorage.setItem('user', JSON.stringify({username, password}));
-    //this.user = {username, password};
-    this.startSessionTimeout();
-    return true; // return true if login is successful
+  registerUser(user: User): Observable<boolean> {
+    return this.userService.registerUser(user).pipe(
+      tap(success => {
+        if (success) {
+          this.startSessionTimeout();
+          localStorage.setItem('token', 'true');
+        }
+      })
+    );
   }
 
   logout(): void {
-    //this.user = null;
-    localStorage.removeItem('user');
-    this.clearSessionTimeout
-  }
-
-  getUser(): {username: string, password: string} | null {
-    this.resetSessionTimeout();
-    //return this.user;
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    console.log('Logging out')
+    localStorage.removeItem('token'); // Clear the authentication token
+    this.clearSessionTimeout(); // Clear session timeout
+    this.router.navigate(['/login']); // Redirect to login page
   }
 
   isLoggedIn(): boolean {
-    this.resetSessionTimeout();
-    //return this.user !== null;
-    return localStorage.getItem('user') !== null;
+    return !!localStorage.getItem('token'); // Check if authentication token exists
   }
 
   private startSessionTimeout(): void {
+    this.clearSessionTimeout();
     this.sessionTimeout = setTimeout(() => this.logout(), this.sessionTimeoutInterval);
   }
 
@@ -44,10 +59,5 @@ export class AuthService {
       clearTimeout(this.sessionTimeout);
       this.sessionTimeout = null;
     }
-  }
-
-  private resetSessionTimeout(): void {
-    this.clearSessionTimeout();
-    this.startSessionTimeout();
   }
 }
