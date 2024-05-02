@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import {CatalogService} from "./services/catalog/catalog.service";
 import {CatalogComponent} from "./services/catalog/catalog.component";
-import {FormArray, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from "./core/header/header.component";
 import {HomeComponent} from "./core/home/home.component";
 import {LoginComponent} from "./core/login/login.component";
@@ -19,6 +19,7 @@ import {ProductGenreComponent} from "./services/catalog/product-genre/product-ge
 import { RegistrationComponent } from './core/register/registration/registration.component';
 import {UserService} from "./services/user/user.service";
 import {RouterModule} from "@angular/router";
+import {UserCardComponent} from "./services/usercard/usercard.component";
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {RouterModule} from "@angular/router";
     ProductDirectorComponent,
     ProductGenreComponent,
     RegistrationComponent,
+    UserCardComponent
     //BasketComponent
   ],
   imports: [
