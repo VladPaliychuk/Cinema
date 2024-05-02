@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from "../user/user.service";
-import { Observable, tap } from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import { User } from "../../core/models/user.model";
 import { UserLoginModel } from "../../core/models/userlogin.model";
 import { Router } from "@angular/router";
@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
 export class AuthService {
   constructor(private userService: UserService, private router: Router) { }
   public username = '';
+  public role = '';
   private sessionTimeout: any = null;
   private sessionTimeoutInterval: number = 30 * 60 * 1000; // 30 minutes
 
@@ -20,6 +21,11 @@ export class AuthService {
         if (success) {
           console.log('Login success:', success);
           this.username = login.username;
+
+          this.userService.getUserByUsername(this.username).subscribe(user => {
+            this.role = user.role;
+          });
+
           this.startSessionTimeout();
           localStorage.setItem('token', 'true');
         }
@@ -47,6 +53,10 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token'); // Check if authentication token exists
+  }
+
+  isAdmin(): boolean {
+    return this.role === 'admin'; // Check if user is admin
   }
 
   private startSessionTimeout(): void {

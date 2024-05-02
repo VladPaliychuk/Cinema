@@ -33,7 +33,7 @@ export class LoginComponent {
       success => {
         console.log('Login success:', success);
         if (success) {
-          const redirectUrl = '/catalog';
+          const redirectUrl = '/home';
           this.router.navigate([redirectUrl]);
         } else {
           this.errorMessage = 'Invalid username or password';
@@ -41,7 +41,7 @@ export class LoginComponent {
       },
       error => {
         console.error('Error logging in:', error);
-        this.errorMessage = 'An error occurred while logging in. Please try again later.';
+        this.errorMessage = 'An error occurred while logging in.';
       }
     );
   }

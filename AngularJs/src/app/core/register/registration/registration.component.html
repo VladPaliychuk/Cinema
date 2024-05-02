@@ -1,15 +1,50 @@
-<form (ngSubmit)="onSubmit()" #registrationForm="ngForm">
-  <div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" [(ngModel)]="user.username" name="username" required>
-  </div>
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="user.password" name="password" required>
-  </div>
-  <div>
-    <label for="password">Email:</label>
-    <input type="password" id="email" [(ngModel)]="user.email" name="email" required>
-  </div>
-  <button type="submit">Register</button>
-</form>
+<div class="form-container">
+  <form (ngSubmit)="onSubmit()" #registrationForm="ngForm">
+
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" [(ngModel)]="user.username" name="username" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" [(ngModel)]="user.password" name="password" required (input)="checkPasswordStrength()">
+    </div>
+
+    <div class="form-group">
+      <div class="password-strength">
+        <div *ngIf="passwordStrength === 'small'" class="small">Too small password</div>
+        <div *ngIf="passwordStrength === 'weak'" class="weak">Weak password</div>
+        <div *ngIf="passwordStrength === 'medium'" class="medium">Medium password</div>
+        <div *ngIf="passwordStrength === 'strong'" class="strong">Strong password</div>
+        <div *ngIf="passwordStrength === 'big'" class="big">Too big password</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password:</label>
+      <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+    </div>
+
+    <div class="form-group">
+      <div class="password-strength">
+        <div *ngIf="user.password !== confirmPassword">Passwords do not match</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="user.email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}" #email="ngModel">
+    </div>
+
+    <div class="form-group">
+      <div class="password-strength">
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-message">
+          Please enter a valid email address (e.g., youremail&#64;example.com).
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="registrationForm.invalid">Register</button>
+  </form>
+</div>

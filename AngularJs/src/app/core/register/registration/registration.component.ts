@@ -16,6 +16,8 @@ export class RegistrationComponent {
     role: 'user'
   };
   errorMessage: string = '';
+  confirmPassword = '';
+  passwordStrength = '';
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -39,5 +41,22 @@ export class RegistrationComponent {
       },
       error => console.error('Error registering:', error)
     );
+  }
+
+  checkPasswordStrength(): void {
+    const password = this.user.password;
+    const passwordLength = password.length;
+
+    if (passwordLength < 8) {
+      this.passwordStrength = 'small';
+    } else if (passwordLength > 30) {
+      this.passwordStrength = 'too big';
+    } else if (/[a-zA-Z]/.test(password) && !/[0-9]/.test(password) && !/\W|_/.test(password)) {
+      this.passwordStrength = 'weak';
+    } else if (/[a-zA-Z]/.test(password) && /[0-9]/.test(password) && !/\W|_/.test(password)) {
+      this.passwordStrength = 'medium';
+    } else if (/[a-zA-Z]/.test(password) && /[0-9]/.test(password) && /\W|_/.test(password)) {
+      this.passwordStrength = 'strong';
+    }
   }
 }

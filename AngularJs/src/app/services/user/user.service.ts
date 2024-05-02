@@ -20,12 +20,17 @@ export class UserService {
     return this.http.post<boolean>(`${this.apiUrl}/Login`, login);
   }
 
-  getAllUsers(): Observable<any[]> {
+  getAllUsers(): Observable<User[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetAll`);
   }
 
-  getUserById(id: string): Observable<any> {
+  getUserById(id: string): Observable<User> {
     return this.http.get<any>(`${this.apiUrl}/GetUserById/${id}`);
+  }
+
+  getUserByUsername(username: string): Observable<User> {
+    return this.http.get<any>(`${this.apiUrl}/GetUserByUsername/${username}`);
+
   }
 
   createUser(user: any): Observable<void> {

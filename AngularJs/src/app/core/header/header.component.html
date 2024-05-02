@@ -4,7 +4,7 @@
 
     <div class="col-auto">
       <ul class="navbar-nav ">
-        <li class="nav-item active" >
+        <li class="nav-item active" *ngIf="authService.isAdmin()">
           <a class="nav-link" (click)="onCreate()"  [routerLink]="['/admin-office']">Кабінет</a>
         </li>
       </ul>
