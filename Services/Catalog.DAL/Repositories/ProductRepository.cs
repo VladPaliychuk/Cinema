@@ -51,8 +51,7 @@ public class ProductRepository : IProductRepository
                 .ToLower() == name.ToLower())
             .ToListAsync();
 
-        return productsByName
-               ?? throw new EntityNotFoundException($"Product with name {name} not found.");
+        return productsByName;
     }
     
     public async Task<Product> GetProductByName(string name)

@@ -44,6 +44,12 @@ public class ProductDirectorRepository : IProductDirectorRepository
             .ToListAsync();
     }
 
+    public async Task<ProductDirector> GetByProductIdAndDirectorId(Guid productId, Guid directorId)
+    {
+        return await _context.ProductDirectors
+            .FirstOrDefaultAsync(productDirector => productDirector.ProductId == productId && productDirector.DirectorId == directorId);
+    }
+
     public async Task Create(ProductDirector productDirector)
     {
         if (productDirector == null)
@@ -66,12 +72,15 @@ public class ProductDirectorRepository : IProductDirectorRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task Delete(Guid id)
+    public async Task Delete(Guid productId, Guid directorId)
     {
-        var productDirector = await _context.ProductDirectors.FindAsync(id);
+        var productDirector = await _context.ProductDirectors
+            .FirstOrDefaultAsync(pa => pa.ProductId == productId && pa.DirectorId == directorId);
+
         if (productDirector == null)
         {
-            throw new EntityNotFoundException($"ProductDirector with id {id} not found.");
+            throw new EntityNotFoundException($"ProductDirector with ProductId {productId} " +
+                                              $"and DirectorId {directorId} not found.");
         }
 
         _context.ProductDirectors.Remove(productDirector);

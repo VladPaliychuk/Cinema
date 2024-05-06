@@ -38,6 +38,7 @@ namespace Catalog.API.Controllers
             _directorRepository = directorRepository;
         }
         //TODO change all methods is [Route...] style
+        //TODO зробити апдейт метод для резервування
         [HttpGet("GetTakeSkip")]
         public ActionResult Get(int take = 10, int skip = 0, string sortBy = "Id")
         {
@@ -99,6 +100,22 @@ namespace Catalog.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductDetail - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPut("UpdateProductDetails")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> UpdateProductDetails([FromBody] ProductDetails productDetails)
+        {
+            try
+            {
+                await _catalogService.UpdateProductDetails(productDetails);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateProductDetails - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
@@ -318,6 +335,54 @@ namespace Catalog.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateProductAsync - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPut("UpdateActor")]
+        [ProducesResponseType(typeof(Actor), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> UpdateActor([FromBody] Actor actor)
+        {
+            try
+            {
+                await _actorRepository.Update(actor);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateActor - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPut("UpdateGenre")]
+        [ProducesResponseType(typeof(Genre), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> UpdateGenre([FromBody] Genre genre)
+        {
+            try
+            {
+                await _genreRepository.Update(genre);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateGenre - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPut("UpdateDirector")]
+        [ProducesResponseType(typeof(Director), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> UpdateDirector([FromBody] Director director)
+        {
+            try
+            {
+                await _directorRepository.Update(director);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateDirector - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }

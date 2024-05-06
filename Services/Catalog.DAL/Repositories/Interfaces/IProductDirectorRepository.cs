@@ -7,8 +7,9 @@ public interface IProductDirectorRepository
     Task<IEnumerable<ProductDirector>> GetAll();
     Task<IEnumerable<ProductDirector>> GetByProductId(string productId);
     Task<IEnumerable<ProductDirector>> GetByDirectorId(Guid directorId);
+    Task<ProductDirector> GetByProductIdAndDirectorId(Guid productId, Guid directorId);
         
     Task Create(ProductDirector productDirector);
     Task Update(ProductDirector productDirector);
-    Task Delete(Guid id);
+    Task Delete(Guid productId, Guid directorId);
 }

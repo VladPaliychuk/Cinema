@@ -74,4 +74,12 @@ public class UserRepository : IUserRepository
         _context.Users.Remove(entity);
         await _context.SaveChangesAsync();
     }
+    
+    public async Task DeleteByUsername(string username)
+    {
+        var entity = await GetByUsername(username) 
+                     ?? throw new EntityNotFoundException($"User with username {username} not found. Can't delete.");
+        _context.Users.Remove(entity);
+        await _context.SaveChangesAsync();
+    }
 }

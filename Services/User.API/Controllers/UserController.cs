@@ -97,6 +97,25 @@ public class UserController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Route("[action]/{username}", Name = "GetUserByUsername")]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<DAL.Entities.User>> GetUserByUsername(string username)
+    {
+        try
+        {
+            var result = await _userRepository.GetByUsername(username);
+            _logger.LogInformation($"Returned user with username: {username}");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("An error occurred while getting user by username: {username}", ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while getting user by username");
+        }
+    }
+    
     [HttpPost("CreateUser")]
     [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
     public async Task<ActionResult> CreateUser([FromBody] DAL.Entities.User user)
@@ -135,13 +154,32 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteUser {id}")]
+    [HttpDelete]
+    [Route("[action]/{id}", Name = "DeleteUser")]
     [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
     public async Task<ActionResult> DeleteUser(Guid id)
     {
         try
         {
             await _userRepository.Delete(id);
+            return StatusCode(StatusCodes.Status201Created);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                $"An error occurred while deleting user - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting user");
+        }
+    }
+    
+    [HttpDelete]
+    [Route("[action]/{username}", Name = "DeleteUserByUsername")]
+    [ProducesResponseType(typeof(DAL.Entities.User), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> DeleteUserByUsername(string username)
+    {
+        try
+        {
+            await _userRepository.DeleteByUsername(username);
             return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)

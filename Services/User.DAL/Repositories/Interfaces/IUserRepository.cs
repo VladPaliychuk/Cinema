@@ -11,4 +11,5 @@ public interface IUserRepository
     Task Create(Entities.User product);
     Task Update(Entities.User product);
     Task Delete(Guid id);
+    Task DeleteByUsername(string username);
 }

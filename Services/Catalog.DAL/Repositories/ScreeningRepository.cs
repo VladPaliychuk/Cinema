@@ -33,6 +33,12 @@ public class ScreeningRepository : IScreeningRepository
             .ToListAsync();
     }
 
+    public async Task<Screening> GetByDateTime(string startDate, string startTime)
+    {
+        return await _context.Screenings
+            .FirstOrDefaultAsync(s => s.StartDate == startDate && s.StartTime == startTime);
+    }
+
     public async Task Create(Screening screening)
     {
         _context.Screenings.Add(screening);
