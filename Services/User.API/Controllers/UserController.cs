@@ -12,16 +12,22 @@ namespace User.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IEmailService _emailService;
+    private readonly IUserService _userService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
     
     public UserController(
         IUserRepository userRepository, 
         ILogger<UserController> logger,
-        IAuthService authService
+        IAuthService authService,
+        IEmailService emailService,
+        IUserService userService
         )
     {
         _authService = authService;
+        _emailService = emailService;
+        _userService = userService;
         _userRepository = userRepository;
         _logger = logger;
     }
@@ -60,6 +66,22 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPost("UpdatePassword")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> UpdatePassword(string username, string newPassword)
+    {
+        try
+        {
+            await _userService.UpdatePassword(username, newPassword);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while updating password - {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating password");
+        }
+    }
 
     [HttpGet("GetAll")]
     [ProducesResponseType(typeof(IEnumerable<DAL.Entities.User>), (int)HttpStatusCode.OK)]

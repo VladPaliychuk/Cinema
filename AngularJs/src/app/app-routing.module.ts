@@ -11,6 +11,7 @@ import {ProductActorComponent} from "./services/catalog/product-actor/product-ac
 import {ProductDirectorComponent} from "./services/catalog/product-director/product-director.component";
 import {ProductGenreComponent} from "./services/catalog/product-genre/product-genre.component";
 import {RegistrationComponent} from "./core/register/registration/registration.component";
+import {EditMovieComponent} from "./services/movie/edit-movie/edit-movie.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'catalog', component: CatalogComponent, canActivate: [AuthGuard]},
   { path: 'movie-create', component: MovieCreateComponent, canActivate: [AuthGuard] },
+  { path: 'movie-edit/:productName', component: EditMovieComponent, canActivate: [AuthGuard] },
   { path: 'admin-office', component: AdminOfficeComponent, canActivate: [AuthGuard] },
   { path: 'movie/:productName', component: MovieDetailsComponent, canActivate: [AuthGuard] },
   { path: 'movies-by-actor/:actor', component: ProductActorComponent, canActivate: [AuthGuard] },

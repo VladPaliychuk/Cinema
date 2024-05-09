@@ -26,17 +26,17 @@ public class UserRepository : IUserRepository
                ?? throw new EntityNotFoundException($"User with id {id} not found.");
     }
 
-    public async Task<Entities.User?> GetByEmail(string email)
+    public async Task<Entities.User> GetByEmail(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
     
-    public async Task<Entities.User?> GetByUsername(string username)
+    public async Task<Entities.User> GetByUsername(string username)
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
     }
     
-    public async Task<Entities.User?> GetUserByUsernameOrEmail(string username, string email)
+    public async Task<Entities.User> GetUserByUsernameOrEmail(string username, string email)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Username == username || u.Email == email);

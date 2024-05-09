@@ -37,7 +37,7 @@ namespace Catalog.API.Controllers
             _genreRepository = genreRepository;
             _directorRepository = directorRepository;
         }
-        //TODO change all methods is [Route...] style
+        
         //TODO зробити апдейт метод для резервування
         [HttpGet("GetTakeSkip")]
         public ActionResult Get(int take = 10, int skip = 0, string sortBy = "Id")
@@ -300,8 +300,92 @@ namespace Catalog.API.Controllers
             }
         }
         
+        [HttpPost("CreateProductGenreRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductGenreRelation(string productName, string genreName)
+        {
+            try
+            {
+                await _catalogService.CreateProductGenreRelation(productName, genreName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductGenreRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
         
-        [HttpPost("CreateProductAsync")]
+        [HttpPost("CreateProductDirectorRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductDirectorRelation(string productName, string directorName)
+        {
+            try
+            {
+                await _catalogService.CreateProductDirectorRelation(productName, directorName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductDirectorRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteProductActorRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteProductActorRelation(string productName, string actorName)
+        {
+            try
+            {
+                await _catalogService.DeleteProductActorRelation(productName, actorName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі DeleteProductActorRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteProductGenreRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteProductGenreRelation(string productName, string genreName)
+        {
+            try
+            {
+                await _catalogService.DeleteProductGenreRelation(productName, genreName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі DeleteProductGenreRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteProductDirectorRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteProductDirectorRelation(string productName, string directorName)
+        {
+            try
+            {
+                await _catalogService.DeleteProductDirectorRelation(productName, directorName);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі DeleteProductDirectorRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        /// <summary>
+        /// Id генерується автоматично, тож можна записувати будь-яке значення
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        [HttpPost("CreateProduct")]
         [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductAsync([FromBody] Product product)
         {
@@ -322,8 +406,90 @@ namespace Catalog.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
+        
+        /// <summary>
+        /// Id генерується автоматично, тож можна записувати будь-яке значення
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <returns></returns>
+        [HttpPost("CreateActor")]
+        [ProducesResponseType(typeof(Actor), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateActor([FromBody] Actor actor)
+        {
+            try
+            {
+                actor.Id = Guid.NewGuid();
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogInformation($"Ми отримали некоректний json зі сторони клієнта");
+                    return BadRequest("Обєкт івенту є некоректним");
+                }
 
-        [HttpPut("UpdateProductAsync")]
+                await _actorRepository.Create(actor);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateActor - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        /// <summary>
+        /// Id генерується автоматично, тож можна записувати будь-яке значення
+        /// </summary>
+        /// <param name="genre"></param>
+        /// <returns></returns>
+        [HttpPost("CreateGenre")]
+        [ProducesResponseType(typeof(Genre), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateGenre([FromBody] Genre genre)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogInformation($"Ми отримали некоректний json зі сторони клієнта");
+                    return BadRequest("Обєкт івенту є некоректним");
+                }
+
+                await _genreRepository.Create(genre);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateGenre - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        /// <summary>
+        /// Id генерується автоматично, тож можна записувати будь-яке значення
+        /// </summary>
+        /// <param name="director"></param>
+        /// <returns></returns>
+        [HttpPost("CreateDirector")]
+        [ProducesResponseType(typeof(Director), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateDirector([FromBody] Director director)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogInformation($"Ми отримали некоректний json зі сторони клієнта");
+                    return BadRequest("Обєкт івенту є некоректним");
+                }
+
+                await _directorRepository.Create(director);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateDirector - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPut("UpdateProduct")]
         [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> UpdateProductAsync([FromBody] Product product)
         {
@@ -400,6 +566,57 @@ namespace Catalog.API.Controllers
             {
                 _logger.LogError(
                     $"Транзакція сфейлилась! Щось пішло не так у методі DeleteProductAsync - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteActor {id}")]
+        [ProducesResponseType(typeof(Actor), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteActor(Guid id)
+        {
+            try
+            {
+                await _actorRepository.Delete(id);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Транзакція сфейлилась! Щось пішло не так у методі DeleteActor - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteGenre {id}")]
+        [ProducesResponseType(typeof(Genre), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteGenre(Guid id)
+        {
+            try
+            {
+                await _genreRepository.Delete(id);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Транзакція сфейлилась! Щось пішло не так у методі DeleteGenre - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteDirector {id}")]
+        [ProducesResponseType(typeof(Director), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteDirector(Guid id)
+        {
+            try
+            {
+                await _directorRepository.Delete(id);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Транзакція сфейлилась! Щось пішло не так у методі DeleteDirector - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }

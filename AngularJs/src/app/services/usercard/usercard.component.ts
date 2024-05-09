@@ -12,5 +12,4 @@ export class UserCardComponent{
 
   constructor(private userCardService: UserCardService) { }
 
-
 }

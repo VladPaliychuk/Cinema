@@ -1,0 +1,52 @@
+<div *ngIf="movie" class="movie-container">
+  <h2>{{ movie.product.name }}</h2>
+  <p>{{ movie.product.description }}</p>
+  <p>Release Date: {{ movie.product.releaseDate }}</p>
+  <p>Duration: {{ movie.product.duration }}</p>
+  <p>Country: {{ movie.product.country }}</p>
+  <p>Age Restriction: {{ movie.product.ageRestriction }}</p>
+  <p>Price: {{ movie.product.price }}</p>
+
+  <h3>Genres:</h3>
+  <ul>
+    <li *ngFor="let genre of movie.genres">
+      {{ genre.name }}
+      <button (click)="deleteGenre(genre)">Delete</button>
+    </li>
+  </ul>
+  <input [(ngModel)]="genre" placeholder="New genre">
+  <button (click)="addGenre(genre)">Add Genre</button>
+
+  <br><br>
+  <h3>Directors:</h3>
+  <ul>
+    <li *ngFor="let director of movie.directors">
+      {{ director.firstName }} {{ director.lastName }}
+      <button (click)="deleteDirector(director)">Delete</button>
+    </li>
+  </ul>
+  <input [(ngModel)]="firstname" placeholder="First name">
+  <input [(ngModel)]="lastname" placeholder="Last name">
+  <button (click)="addDirector(firstname, lastname)">Add Director</button>
+
+  <br><br>
+  <h3>Actors:</h3>
+  <ul>
+    <li *ngFor="let actor of movie.actors">
+      {{ actor.firstName }} {{ actor.lastName }}
+      <button (click)="deleteActor(actor)">Delete</button>
+    </li>
+  </ul>
+  <input [(ngModel)]="firstname" placeholder="First name">
+  <input [(ngModel)]="lastname" placeholder="Last name">
+  <button (click)="addActor(firstname, lastname)">Add Actor</button>
+
+  <br><br>
+  <h3>Screenings:</h3>
+  <ul>
+    <li *ngFor="let screening of movie.screenings">{{ screening.startDate }} {{ screening.startTime }}</li>
+  </ul>
+</div>
+<div *ngIf="!movie">
+  <p>No movie details available.</p>
+</div>

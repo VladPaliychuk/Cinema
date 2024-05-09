@@ -1,7 +1,6 @@
 ﻿using Basket.API.Entities;
 using Basket.API.Repositories.Interfaces;
 using Basket.API.Services.Interfaces;
-using BuildingBlocks.Messaging.Events;
 using EventBus.Interfaces.Bus;
 
 namespace Basket.API.Services;

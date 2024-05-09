@@ -1,0 +1,29 @@
+*{
+  color: white;
+}
+
+li{
+  margin-top: 5px;
+}
+
+input{
+  color: black;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left: 3px;
+}
+
+button{
+  margin-left: 3px;
+  background-color: #73a4aa;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+button:hover {
+  background-color: #385153;
+}

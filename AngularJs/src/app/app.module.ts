@@ -20,6 +20,8 @@ import { RegistrationComponent } from './core/register/registration/registration
 import {UserService} from "./services/user/user.service";
 import {RouterModule} from "@angular/router";
 import {UserCardComponent} from "./services/usercard/usercard.component";
+import { UserOfficeComponent } from './core/personal_office/user/user-office/user-office.component';
+import { EditMovieComponent } from './services/movie/edit-movie/edit-movie.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import {UserCardComponent} from "./services/usercard/usercard.component";
     ProductDirectorComponent,
     ProductGenreComponent,
     RegistrationComponent,
-    UserCardComponent
+    UserCardComponent,
+    UserOfficeComponent,
+    EditMovieComponent
     //BasketComponent
   ],
   imports: [

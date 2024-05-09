@@ -404,9 +404,20 @@ public class CatalogService : ICatalogService
         var product = await _productRepository.GetProductByName(productName);
         var actor = await _actorRepository.GetByName(firstName, lastName);
 
-        if (product == null || actor == null)
+        if (product == null)
         { 
-            throw new Exception("Product or Actor not found.");
+            throw new Exception("Product not found.");
+        }
+
+        if (actor == null)
+        {
+            actor = new Actor
+            {
+                Id = new Guid(),
+                FirstName = firstName,
+                LastName = lastName
+            };
+            await _actorRepository.Create(actor);
         }
 
         var productActor = new ProductActor
@@ -433,7 +444,98 @@ public class CatalogService : ICatalogService
         
         await _productActorRepository.Delete(product.Id, actor.Id);
     }
-    
+
+    public async Task CreateProductGenreRelation(string productName, string genreName)
+    {
+        var product = await _productRepository.GetProductByName(productName);
+        var genre = await _genreRepository.GetByName(genreName);
+
+        if (product == null)
+        {
+            throw new Exception("Product not found.");
+        }
+
+        if(genre == null)
+        {
+            genre = new Genre
+            {
+                Id = Guid.NewGuid(),
+                Name = genreName
+            };
+            await _genreRepository.Create(genre);
+        }
+
+        var productGenre = new ProductGenre
+        {
+            ProductId = product.Id,
+            GenreId = genre.Id
+        };
+
+        await _productGenreRepository.Create(productGenre);
+    }
+
+    public async Task DeleteProductGenreRelation(string productName, string genreName)
+    {
+        var product = await _productRepository.GetProductByName(productName);
+        var genre = await _genreRepository.GetByName(genreName);
+
+        if (product == null || genre == null)
+        {
+            throw new Exception("Product or Genre not found.");
+        }
+
+        await _productGenreRepository.Delete(product.Id, genre.Id);
+    }
+
+    public async Task CreateProductDirectorRelation(string productName, string directorName)
+    {
+        string firstName = directorName.Split(' ')[0];
+        string lastName = directorName.Split(' ')[1];
+
+        var product = await _productRepository.GetProductByName(productName);
+        var director = await _directorRepository.GetByName(firstName, lastName);
+
+        if (product == null)
+        {
+            throw new Exception("Product");
+        }
+
+        if (director == null)
+        {
+            director = new Director
+            {
+                Id = Guid.NewGuid(),
+                FirstName = firstName,
+                LastName = lastName
+            };
+            await _directorRepository.Create(director);
+        }
+
+        var productDirector = new ProductDirector
+        {
+            ProductId = product.Id,
+            DirectorId = director.Id
+        };
+
+        await _productDirectorRepository.Create(productDirector);
+    }
+
+    public async Task DeleteProductDirectorRelation(string productName, string directorName)
+    {
+        string firstName = directorName.Split(' ')[0];
+        string lastName = directorName.Split(' ')[1];
+
+        var product = await _productRepository.GetProductByName(productName);
+        var director = await _directorRepository.GetByName(firstName, lastName);
+
+        if (product == null || director == null)
+        {
+            throw new Exception("Product or Director not found.");
+        }
+
+        await _productDirectorRepository.Delete(product.Id, director.Id);
+    }
+
     public async Task<IEnumerable<Product>> GetProductsByActorName(string actorName)
     {
         string firstName = actorName.Split(' ')[0];

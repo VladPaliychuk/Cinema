@@ -10,6 +10,10 @@ public interface ICatalogService
     Task UpdateProductDetails(ProductDetails productDetails);
     Task CreateProductActorRelation(string productName, string actorName);
     Task DeleteProductActorRelation(string productName, string actorName);
+    Task CreateProductGenreRelation(string productName, string genreName);
+    Task DeleteProductGenreRelation(string productName, string genreName);
+    Task CreateProductDirectorRelation(string productName, string directorName);
+    Task DeleteProductDirectorRelation(string productName, string directorName);
     Task<IEnumerable<Product>> GetProductsByActorName(string actorName);
     Task<IEnumerable<Product>> GetProductsByDirectorName(string directorName);
     Task<IEnumerable<Product>> GetProductsByGenreName(string genreName);

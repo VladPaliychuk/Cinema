@@ -1,6 +1,6 @@
-<button (click)="create()">CREATE</button>
+<button (click)="create_movie()">Create Movie</button>
 
 <div *ngFor="let product of products">
   <h2 style="color: white;">{{ product.name }}</h2>
-  <button (click)="delete(product.id)">DELETE</button>
+  <button (click)="delete(product.id)">Delete</button>
 </div>

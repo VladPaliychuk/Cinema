@@ -30,16 +30,31 @@ export class CatalogService {
     return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByGenre/${genre}`);
   }
 
-  getProductById(id: string): Observable<any> {
-    return this.http.get<Product>(`${this.baseUrl}/GetProductByIdAsync/${id}`);
+  createProductActorRelation(productName: string, actorName: string): Observable<void> {
+    const url = `${this.baseUrl}/CreateProductActorRelation?productName=${encodeURIComponent(productName)}&actorName=${encodeURIComponent(actorName)}`;
+    return this.http.post<void>(url, {});
   }
 
-  getProductsByName(name: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByName/${name}`);
+  createProductGenreRelation(productName: string, genreName: string): Observable<void> {
+    const url = `${this.baseUrl}/CreateProductGenreRelation?productName=${encodeURIComponent(productName)}&genreName=${encodeURIComponent(genreName)}`;
+    return this.http.post<void>(url, {});
   }
 
-  getProductsByCategory(category: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByCategory/${category}`);
+  createProductDirectorRelation(productName: string, directorName: string): Observable<void> {
+    const url = `${this.baseUrl}/CreateProductDirectorRelation?productName=${encodeURIComponent(productName)}&directorName=${encodeURIComponent(directorName)}`;
+    return this.http.post<void>(url, {});
+  }
+
+  deleteProductActorRelation(productName: string, actorName: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteProductActorRelation?productName=${productName}&actorName=${actorName}`);
+  }
+
+  deleteProductGenreRelation(productName: string, genreName: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteProductGenreRelation?productName=${productName}&genreName=${genreName}`);
+  }
+
+  deleteProductDirectorRelation(productName: string, directorName: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteProductDirectorRelation?productName=${productName}&directorName=${directorName}`);
   }
 
   searchProducts(name?: string, category?: string): Observable<Product[]> {
