@@ -1,0 +1,31 @@
+*{
+  color: #EEEEEE;
+
+}
+
+.main-div{
+  margin-left: 30px;
+  margin-top: 30px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.usercard-details{
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+
+
+}
+.buttons{
+}
+.update-password-button{
+  color: white;
+  background-color: #37aaaf;
+  padding:5px;
+  border-radius: 5px;
+  border:none;
+}
+.update-password-button:hover{
+  background-color: #2c7a7f;
+}

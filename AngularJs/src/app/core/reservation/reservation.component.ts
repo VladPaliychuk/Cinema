@@ -21,19 +21,36 @@ export class ReservationComponent implements OnInit{
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.catalogService.getScreeningWithSeatsById(id).subscribe(screeningSeats => {
-      this.screeningSeats = screeningSeats;
-    });
-    this.catalogService.getProductById(this.screeningSeats.screening.productId).subscribe(product => {
-      this.movie = product;
-    });
+    this.catalogService.getScreeningWithSeatsById(id).subscribe(
+      screeningSeats => {
+        console.log('Screening Seats:', screeningSeats);
+        this.screeningSeats = screeningSeats;
+        console.log('Screening Seats:', this.screeningSeats);
+        if (this.screeningSeats) {
+          this.catalogService.getProductById(this.screeningSeats.productId).subscribe(
+            product => {
+              this.movie = product;
+              this.username = this.auth.getUsername();
+              console.log('Product:', this.movie);
+              console.log('Username:', this.username);
+            },
+            error => {
+              console.error('Error fetching product:', error);
+            }
+          );
+        }
+      },
+      error => {
+        console.error('Error fetching screening seats:', error);
+      }
+    );
   }
 
-  confirmReservation(seatId: string, screeningId: string): void {
+
+  confirmReservation(seatId: string): void {
     const isConfirmed = confirm('Ви впевнені, що хочете забронювати це місце?');
     if (isConfirmed) {
-      // Викликати метод резервації, якщо користувач підтвердив резервацію
-      this.catalogService.reserveSeat(screeningId, seatId, this.username).subscribe(
+      this.catalogService.reserveSeat(this.screeningSeats.id, seatId, this.username).subscribe(
         (response: Blob) => {
           const url = window.URL.createObjectURL(response);
           const a = document.createElement('a');
@@ -44,28 +61,9 @@ export class ReservationComponent implements OnInit{
           window.URL.revokeObjectURL(url);
         },
         error => {
-          // Обробити помилку резервації
           console.error('Error:', error);
         }
       );
     }
-  }
-
-  reserveSeat(screeningId: string, seatId: string, username: string): void {
-    this.catalogService.reserveSeat(screeningId, seatId, username).subscribe(
-      (response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'ReservationDetails.pdf';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error => {
-        // Handle error
-        console.error('Error:', error);
-      }
-    );
   }
 }

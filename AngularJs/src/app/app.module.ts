@@ -25,6 +25,7 @@ import { EditMovieComponent } from './services/movie/edit-movie/edit-movie.compo
 import {UserCardService} from "./services/usercard/usercard.service";
 import { ScreeningCatalogComponent } from './services/catalog/screening-catalog/screening-catalog.component';
 import { ReservationComponent } from './core/reservation/reservation.component';
+import { UpdatePasswordComponent } from './core/personal_office/user/user-office/update-password/update-password.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ReservationComponent } from './core/reservation/reservation.component';
     UserOfficeComponent,
     EditMovieComponent,
     ScreeningCatalogComponent,
-    ReservationComponent
+    ReservationComponent,
+    UpdatePasswordComponent
     //BasketComponent
   ],
   imports: [

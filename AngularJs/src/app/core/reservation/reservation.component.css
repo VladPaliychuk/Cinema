@@ -1,8 +1,52 @@
 * {
   color: #EEEEEE;
+
+  border: 1px grey solid;
+}
+
+.main-div{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.details{
+
+}
+
+.movie-details{
+
+}
+
+.movie-poster{
+  width: 200px;
+  height: 300px;
+}
+
+.screening-details{
+
 }
 
 
+.seats{
+  width: 500px;
+  height: 500px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 1px;
+}
+.seat{
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+  background-color: #37aaaf;
+  text-align: center;
+  line-height: 50px;
+}
+.seat:hover{
+  background-color: #1f7a7f;
+}
 
 .seat > div{
   background-color: #37aaaf;

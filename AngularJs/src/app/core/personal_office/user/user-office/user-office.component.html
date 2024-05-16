@@ -1,1 +1,11 @@
-<p>user-office works!</p>
+<div class="main-div">
+  <div *ngIf="usercard" class="usercard-details">
+    <div><b>{{ usercard.userName }}</b></div>
+      <div>{{ usercard.firstName }} {{ usercard.lastName }}</div>
+      <div>Email: {{ usercard.emailAddress }}</div>
+      <div>Bonuses: <b>{{ usercard.bonuses }}</b></div>
+  </div>
+  <div class="buttons">
+    <button class="update-password-button" [routerLink]="['/update-password']">Оновити пароль</button>
+  </div>
+</div>

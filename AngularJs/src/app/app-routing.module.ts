@@ -14,6 +14,10 @@ import {RegistrationComponent} from "./core/register/registration/registration.c
 import {EditMovieComponent} from "./services/movie/edit-movie/edit-movie.component";
 import {ReservationComponent} from "./core/reservation/reservation.component";
 import {ScreeningCatalogComponent} from "./services/catalog/screening-catalog/screening-catalog.component";
+import {UserOfficeComponent} from "./core/personal_office/user/user-office/user-office.component";
+import {
+  UpdatePasswordComponent
+} from "./core/personal_office/user/user-office/update-password/update-password.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -25,11 +29,13 @@ const routes: Routes = [
   { path: 'movie-create', component: MovieCreateComponent, canActivate: [AuthGuard] },
   { path: 'movie-edit/:productName', component: EditMovieComponent, canActivate: [AuthGuard] },
   { path: 'admin-office', component: AdminOfficeComponent, canActivate: [AuthGuard] },
+  { path: 'user-office', component:UserOfficeComponent, canActivate: [AuthGuard] },
   { path: 'movie/:productName', component: MovieDetailsComponent, canActivate: [AuthGuard] },
   { path: 'movies-by-actor/:actor', component: ProductActorComponent, canActivate: [AuthGuard] },
   { path: 'movies-by-director/:director', component: ProductDirectorComponent, canActivate: [AuthGuard] },
   { path: 'movies-by-genre/:genre', component: ProductGenreComponent, canActivate: [AuthGuard] },
-  { path: 'reservation/:id', component: ReservationComponent, canActivate: [AuthGuard] }
+  { path: 'reservation/:id', component: ReservationComponent, canActivate: [AuthGuard] },
+  { path: 'update-password', component: UpdatePasswordComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

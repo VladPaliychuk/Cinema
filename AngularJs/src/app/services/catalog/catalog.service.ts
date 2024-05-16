@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {catchError, map, Observable, throwError} from 'rxjs';
 import {Product} from "../../core/models/product.model";
+import {ScreeningSeats} from "../../core/models/screeningseats.model";
 
 @Injectable({
   providedIn: 'root'
@@ -50,12 +51,12 @@ export class CatalogService {
     return this.http.get<any>(`${this.baseUrl}/GetAllScreenings`);
   }
 
-  getAllScreeningsWithSeats(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/GetAllScreeningsWithSeats`);
+  getAllScreeningsWithSeats(): Observable<ScreeningSeats[]> {
+    return this.http.get<ScreeningSeats[]>(`${this.baseUrl}/GetAllScreeningsWithSeats`);
   }
 
-  getScreeningWithSeatsById(id: string | null): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/GetScreeningWithSeatsById/${id}`);
+  getScreeningWithSeatsById(id: string | null): Observable<ScreeningSeats> {
+    return this.http.get<ScreeningSeats>(`${this.baseUrl}/GetScreeningWithSeatsById/${id}`);
   }
 
   getProductById(id: string): Observable<Product> {
@@ -64,7 +65,7 @@ export class CatalogService {
 
   reserveSeat(screeningId: string, seatId: string, username: string) {
     return this.http
-      .post(`${this.baseUrl}/ReserveSeat/${screeningId}/${seatId}`, { username }, { responseType: 'blob' })
+      .post(`${this.baseUrl}/ReserveSeat/${screeningId}/${seatId}/?username=${username}`, {}, { responseType: 'blob' })
       .pipe(
         catchError(error => {
           console.error('Error:', error);
