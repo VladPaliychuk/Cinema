@@ -1,34 +1,73 @@
 import { Injectable } from '@angular/core';
 import { UserService } from "../user/user.service";
-import {Observable, of, tap} from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject, tap, switchMap, catchError, of } from "rxjs";
 import { User } from "../../core/models/user.model";
 import { UserLoginModel } from "../../core/models/userlogin.model";
 import { Router } from "@angular/router";
+
+const SESSION_TIMEOUT_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private userService: UserService, private router: Router) { }
   public username = '';
   public role = '';
   private sessionTimeout: any = null;
-  private sessionTimeoutInterval: number = 30 * 60 * 1000; // 30 minutes
+
+  private adminRole = new BehaviorSubject<boolean>(false);
+  public isAdminRole = this.adminRole.asObservable();
+
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  public isLoggedInAsync = this.loggedIn.asObservable();
+
+  private readySource = new ReplaySubject<boolean>(1);
+  public isReady = this.readySource.asObservable();
+
+  constructor(private userService: UserService, private router: Router) {
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    if (username && role) {
+      this.username = username;
+      this.role = role;
+      this.adminRole.next(role === 'admin');
+      this.setReady(true);
+      this.loggedIn.next(true);
+    }
+  }
+
+  private setReady(value: boolean) {
+    this.readySource.next(value);
+  }
 
   loginUser(login: UserLoginModel): Observable<boolean> {
     return this.userService.loginUser(login).pipe(
-      tap(success => {
+      switchMap(success => {
         if (success) {
-          console.log('Login success:', success);
           this.username = login.username;
-
-          this.userService.getUserByUsername(this.username).subscribe(user => {
-            this.role = user.role;
-          });
-
+          localStorage.setItem('username', login.username);
+          this.setReady(true);
+          this.loggedIn.next(true);
           this.startSessionTimeout();
           localStorage.setItem('token', 'true');
+
+          return this.userService.getUserByUsername(this.username).pipe(
+            tap(user => {
+              if (user) {
+                this.role = user.role;
+                localStorage.setItem('role', user.role);
+                this.adminRole.next(user.role === 'admin');
+              }
+            }),
+            switchMap(() => of(true))
+          );
         }
+        return of(false);
+      }),
+      catchError(error => {
+        // handle error
+        console.error(error);
+        return of(false);
       })
     );
   }
@@ -40,28 +79,38 @@ export class AuthService {
           this.startSessionTimeout();
           localStorage.setItem('token', 'true');
         }
+      }),
+      catchError(error => {
+        // handle error
+        console.error(error);
+        return of(false);
       })
     );
   }
 
   logout(): void {
-    console.log('Logging out')
-    localStorage.removeItem('token'); // Clear the authentication token
-    this.clearSessionTimeout(); // Clear session timeout
-    this.router.navigate(['/login']); // Redirect to login page
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    this.clearSessionTimeout();
+    this.loggedIn.next(false);
+    this.adminRole.next(false);
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token'); // Check if authentication token exists
+    return !!localStorage.getItem('token');
   }
 
   isAdmin(): boolean {
-    return this.role === 'admin'; // Check if user is admin
+    return this.role === 'admin';
   }
-
+  getUsername(): string {
+    return this.username;
+  }
   private startSessionTimeout(): void {
     this.clearSessionTimeout();
-    this.sessionTimeout = setTimeout(() => this.logout(), this.sessionTimeoutInterval);
+    this.sessionTimeout = setTimeout(() => this.logout(), SESSION_TIMEOUT_INTERVAL);
   }
 
   private clearSessionTimeout(): void {

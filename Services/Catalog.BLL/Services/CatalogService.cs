@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using Catalog.BLL.DTOs;
 using Catalog.BLL.Services.Interfaces;
 using Catalog.DAL.Data;
@@ -487,6 +488,53 @@ public class CatalogService : ICatalogService
         await _productGenreRepository.Delete(product.Id, genre.Id);
     }
 
+    public async Task CreateProductScreeningRelation(string productName, string scrDate, string scrTime)
+    {
+        var product = await _productRepository.GetProductByName(productName);
+        var screening = await _screeningRepository.GetByDateTime(scrDate, scrTime);
+
+        if (screening == null)
+        {
+            screening = new Screening
+            {
+                Id = Guid.NewGuid(),
+                ProductId = product.Id,
+                StartTime = scrTime,
+                StartDate = scrDate
+            };
+            await _screeningRepository.Create(screening);
+        }
+        
+        for (int i = 1; i <= 6; i++)
+        {
+            for (int j = 1; j <= 6; j++)
+            {
+                var seat = new Seat
+                {
+                    Id = Guid.NewGuid(),
+                    Number = j.ToString(),
+                    Row = i.ToString(),
+                    ScreeningId = screening.Id,
+                    IsReserved = false
+                };
+                await _seatRepository.Create(seat);
+            }
+        }
+    }
+    
+    public async Task DeleteProductScreeningRelation(string productName, string scrDate, string scrTime)
+    {
+        var product = await _productRepository.GetProductByName(productName);
+        var screening = await _screeningRepository.GetByDateTime(scrDate, scrTime);
+
+        if (product == null || screening == null)
+        {
+            throw new Exception("Product or Screening not found.");
+        }
+
+        await _screeningRepository.Delete(screening.Id);
+    }
+
     public async Task CreateProductDirectorRelation(string productName, string directorName)
     {
         string firstName = directorName.Split(' ')[0];
@@ -595,4 +643,75 @@ public class CatalogService : ICatalogService
         return products;
     }
     
+    public async Task<IEnumerable<MovieScreeningDto>> GetSortedScreeningsAndMoviesByDateTime()
+    {
+        var screenings = await _screeningRepository.GetAllWithProductAsync();
+
+        // Convert the screenings to a list and parse the dates and times for sorting
+        var sortedScreenings = screenings
+            .OrderByDescending(s => DateTime.ParseExact(s.StartDate, "d MMMM", CultureInfo.GetCultureInfo("uk-UA")))
+            .ThenByDescending(s => DateTime.ParseExact(s.StartTime, "HH:mm", CultureInfo.InvariantCulture))
+            .ToList();
+
+        // Map sorted screenings to DTOs
+        var mappedScreenings = sortedScreenings.Select(s => new MovieScreeningDto
+        {
+            Product = s.Product,
+            Screening = s
+        });
+
+        return mappedScreenings;
+    }
+    
+    public async Task DeleteScreeningByDateTime(string screeningDate, string screeningTime)
+    {
+        var screening = await _screeningRepository.GetByDateTime(screeningDate, screeningTime);
+        if (screening == null)
+        {
+            throw new Exception("Screening not found.");
+        }
+
+        await _screeningRepository.Delete(screening.Id);
+    }
+    
+    public async Task<IEnumerable<ScreeningDto>> GetScreeningsWithSeats()
+    {
+        var screenings = await _screeningRepository.GetAllScreeningsWithSeatsAsync();
+
+        var mappedScreenings = _mapper.Map<IEnumerable<ScreeningDto>>(screenings);
+
+        return mappedScreenings;
+    }
+    
+    public async Task<ScreeningDto?> GetScreeningWithSeatsById(Guid screeningId)
+    {
+        var screening = await _screeningRepository.GetScreeningWithSeatsByIdAsync(screeningId);
+    
+        if (screening == null)
+        {
+            return null;
+        }
+    
+        var mappedScreening = _mapper.Map<ScreeningDto>(screening);
+        return mappedScreening;
+    }
+    
+    public async Task ReserveSeat(Guid screeningId, Guid seatId)
+    {
+        var seat = await _seatRepository.GetById(seatId);
+
+        if (seat.IsReserved)
+        {
+            throw new Exception("Seat is already reserved.");
+        }
+
+        if (seat.ScreeningId != screeningId)
+        {
+            throw new Exception("Seat does not belong to the given screening.");
+        }
+
+        seat.IsReserved = true;
+
+        await _seatRepository.Update(seat);
+    }
 }

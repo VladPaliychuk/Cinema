@@ -14,6 +14,7 @@ public class AutoMapperProfile : Profile
         CreateScreeningMaps();
         CreateSeatMaps();
         CreateDirectorMaps();
+        CreateMovieScreeningMaps();
     }
     
     private void CreateProductMaps()
@@ -33,8 +34,10 @@ public class AutoMapperProfile : Profile
     }
     private void CreateScreeningMaps()
     {
-        CreateMap<ScreeningDto, Screening>();
+        CreateMap<Screening, ScreeningDto>()
+            .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats));
         CreateMap<Screening, ScreeningDto>();
+        
     }
     private void CreateSeatMaps()
     {
@@ -46,4 +49,16 @@ public class AutoMapperProfile : Profile
         CreateMap<DirectorDto, Director>();
         CreateMap<Director, DirectorDto>();
     }
+    
+    private void CreateMovieScreeningMaps()
+    {
+        CreateMap<Product, MovieScreeningDto>()
+            .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src));
+        
+        CreateMap<Screening, MovieScreeningDto>()
+            .ForMember(dest => dest.Screening, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product));
+    }
+    
+    
 }

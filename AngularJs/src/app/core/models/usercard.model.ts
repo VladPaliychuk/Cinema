@@ -1,13 +1,12 @@
 export interface UserCard {
-  id: string;
-  username: string;
+  userName: string; // змінено з username на userName
   bonuses: number;
-
-  firstname: string;
-  lastname: string;
-  email: string;
-  address?: string;
+  firstName: string; // змінено з firstname на firstName
+  lastName: string;  // змінено з lastname на lastName
+  emailAddress: string;
+  addressLine?: string;
   country: string;
   state: string;
-  zipcode?: string;
+  zipCode?: string;
 }
+

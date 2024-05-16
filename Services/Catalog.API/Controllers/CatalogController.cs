@@ -15,6 +15,7 @@ namespace Catalog.API.Controllers
         private readonly CatalogContext _catalogContext;
         
         private readonly ICatalogService _catalogService;
+        private readonly IPdfService _pdfService;
         
         private readonly ILogger<CatalogController> _logger;
         
@@ -22,20 +23,24 @@ namespace Catalog.API.Controllers
         private readonly IActorRepository _actorRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly IDirectorRepository _directorRepository;
+        private readonly IScreeningRepository _screeningRepository;
 
         public CatalogController(CatalogContext catalogContext, IProductRepository productRepository,
-            ILogger<CatalogController> logger, ICatalogService catalogService,
+            ILogger<CatalogController> logger, ICatalogService catalogService, IPdfService pdfService,
             IActorRepository actorRepository,
             IGenreRepository genreRepository,
-            IDirectorRepository directorRepository)
+            IDirectorRepository directorRepository,
+            IScreeningRepository screeningRepository)
         {
             _catalogContext = catalogContext;
             _productRepository = productRepository;
             _logger = logger;
             _catalogService = catalogService;
+            _pdfService = pdfService;
             _actorRepository = actorRepository;
             _genreRepository = genreRepository;
             _directorRepository = directorRepository;
+            _screeningRepository = screeningRepository;
         }
         
         //TODO зробити апдейт метод для резервування
@@ -71,7 +76,6 @@ namespace Catalog.API.Controllers
 
         [HttpGet]
         [Route("[action]/{productName}", Name = "GetProductDetails")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ProductDetails>> GetProductDetails(string productName)
         {
@@ -100,22 +104,6 @@ namespace Catalog.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductDetail - {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
-            }
-        }
-        
-        [HttpPut("UpdateProductDetails")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> UpdateProductDetails([FromBody] ProductDetails productDetails)
-        {
-            try
-            {
-                await _catalogService.UpdateProductDetails(productDetails);
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі UpdateProductDetails - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
@@ -187,7 +175,99 @@ namespace Catalog.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
+        
+        [HttpGet("GetAllScreenings")]
+        [ProducesResponseType(typeof(IEnumerable<Screening>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<Screening>>> GetAllScreenings()
+        {
+            try
+            {
+                var result = await _screeningRepository.GetAll();
+                _logger.LogInformation($"Отримали усі сеанси з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetAllScreeningsAsync() - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpGet("GetSortedScreeningsAndMoviesByDateTime")]
+        [ProducesResponseType(typeof(IEnumerable<MovieScreeningDto>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<MovieScreeningDto>>> GetSortedScreeningsAndMoviesByDateTime()
+        {
+            try 
+            {
+                var result = await _catalogService.GetSortedScreeningsAndMoviesByDateTime();
+                _logger.LogInformation($"Отримали усі сеанси відсортовані за датою та часом з бази даних!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі GetSortScreeningsByDateTime - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpGet("GetAllScreeningsWithSeats")]
+        [ProducesResponseType(typeof(IEnumerable<ScreeningDto>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<ScreeningDto>>> GetScreeningsWithSeats()
+        {
+            try
+            {
+                var result = await _catalogService.GetScreeningsWithSeats();
+                _logger.LogInformation("Fetched all screenings with seats from the database!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Transaction failed! Something went wrong in GetScreeningsWithSeats - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred!");
+            }
+        }
+        
+        [HttpGet("GetScreeningWithSeatsById/{screeningId}")]
+        [ProducesResponseType(typeof(ScreeningDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<ScreeningDto>> GetScreeningWithSeatsById(Guid screeningId)
+        {
+            try
+            {
+                var result = await _catalogService.GetScreeningWithSeatsById(screeningId);
 
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                _logger.LogInformation($"Fetched screening with ID {screeningId} along with its seats from the database!");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Transaction failed! Something went wrong in GetScreeningWithSeatsById - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred!");
+            }
+        }
+        
+        [HttpPost]
+        [Route("[action]/{screeningId}/{seatId}", Name = "ReserveSeat")]
+        public async Task<ActionResult> ReserveSeat(Guid screeningId, Guid seatId, string username)
+        {
+            try
+            {
+                await _catalogService.ReserveSeat(screeningId, seatId);
+                var pdfFile = await _pdfService.GenerateReservationPdfAsync(seatId, username);
+                return File(pdfFile, "application/pdf", "ReservationDetails.pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Transaction failed! Something went wrong in ReserveSeat - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred!");
+            }
+        }
+        
         [HttpGet]
         [Route("[action]/{id}", Name = "GetProductById")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -328,6 +408,38 @@ namespace Catalog.API.Controllers
             catch(Exception ex)
             {
                 _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductDirectorRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpPost("CreateProductScreeningRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductScreeningRelation(string productName, string screeningDate, string screeningTime)
+        {
+            try
+            {
+                await _catalogService.CreateProductScreeningRelation(productName, screeningDate, screeningTime);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі CreateProductScreeningRelation - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteProductScreeningRelation")]
+        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteProductScreeningRelation(string productName, string scrDate, string scrTime)
+        {
+            try
+            {
+                await _catalogService.DeleteProductScreeningRelation(productName, scrDate, scrTime);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Транзакція сфейлилась! Щось пішло не так у методі DeleteProductScreeningRelation - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
             }
         }
@@ -553,7 +665,8 @@ namespace Catalog.API.Controllers
             }
         }
 
-        [HttpDelete("DeleteProductAsync {id}")]
+        [HttpDelete]
+        [Route ("[action]/{id}")]
         [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductAsync(Guid id)
         {
@@ -570,7 +683,8 @@ namespace Catalog.API.Controllers
             }
         }
         
-        [HttpDelete("DeleteActor {id}")]
+        [HttpDelete]
+        [Route ("[action]/{id}")]
         [ProducesResponseType(typeof(Actor), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteActor(Guid id)
         {
@@ -587,7 +701,8 @@ namespace Catalog.API.Controllers
             }
         }
         
-        [HttpDelete("DeleteGenre {id}")]
+        [HttpDelete]
+        [Route ("[action]/{id}")]
         [ProducesResponseType(typeof(Genre), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteGenre(Guid id)
         {
@@ -604,7 +719,8 @@ namespace Catalog.API.Controllers
             }
         }
         
-        [HttpDelete("DeleteDirector {id}")]
+        [HttpDelete]
+        [Route ("[action]/{id}")]
         [ProducesResponseType(typeof(Director), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteDirector(Guid id)
         {
@@ -618,6 +734,41 @@ namespace Catalog.API.Controllers
                 _logger.LogError(
                     $"Транзакція сфейлилась! Щось пішло не так у методі DeleteDirector - {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete]
+        [Route ("[action]/{id}")]
+        [ProducesResponseType(typeof(Screening), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteScreening(Guid id)
+        {
+            try
+            {
+                await _screeningRepository.Delete(id);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Транзакція сфейлилась! Щось пішло не так у методі DeleteScreening - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "вот так вот!");
+            }
+        }
+        
+        [HttpDelete("DeleteScreeningByDateTime")]
+        [ProducesResponseType(typeof(Screening), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> DeleteScreeningByDateTime(string screeningDate, string screeningTime)
+        {
+            try
+            {
+                await _catalogService.DeleteScreeningByDateTime(screeningDate, screeningTime);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    $"Transaction failed! Something went wrong in DeleteScreeningByDateTime - {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred!");
             }
         }
     }

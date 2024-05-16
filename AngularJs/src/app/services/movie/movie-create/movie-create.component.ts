@@ -78,4 +78,30 @@ export class MovieCreateComponent implements OnInit {
       );
     }
   }
+
+  discardGenre(index: number): void {
+    const genres = this.movieForm.get('genres') as FormArray;
+    genres.removeAt(index);
+  }
+
+  discardActor(index: number): void {
+    const genres = this.movieForm.get('actors') as FormArray;
+    genres.removeAt(index);
+  }
+  discardDirector(index: number): void {
+    const genres = this.movieForm.get('directors') as FormArray;
+    genres.removeAt(index);
+  }
+  discardScreenings(index: number): void {
+    const genres = this.movieForm.get('screenings') as FormArray;
+    genres.removeAt(index);
+  }
+
+  discardChanges(): void {
+    this.movieForm.reset(); // скидаємо значення форми
+    this.movieForm.setControl('genres', this.fb.array([])); // очищаємо масив жанрів
+    this.movieForm.setControl('actors', this.fb.array([])); // очищаємо масив акторів
+    this.movieForm.setControl('directors', this.fb.array([])); // очищаємо масив режисерів
+    this.movieForm.setControl('screenings', this.fb.array([])); // очищаємо масив сеансів
+  }
 }

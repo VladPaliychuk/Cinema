@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, map, Observable, throwError} from 'rxjs';
 import {Product} from "../../core/models/product.model";
 
 @Injectable({
@@ -20,6 +20,18 @@ export class CatalogService {
     return this.http.get<Product[]>(`${this.baseUrl}/GetAllProducts`);
   }
 
+  searchProductsLocally(searchTerm: string): Observable<Product[]> {
+    // Отримати всі продукти з сервера (можна також використати поточний список продуктів з пам'яті)
+    return this.getProducts().pipe(
+      map(products => {
+        // Фільтрація продуктів за введеним терміном
+        return products.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      })
+    );
+  }
+
   getProductsByActor(actor: string): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByActorName/${actor}`);
   }
@@ -28,6 +40,53 @@ export class CatalogService {
   }
   getProductsByGenre(genre: string): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/GetProductsByGenre/${genre}`);
+  }
+
+  getSortedScreeningsAndMoviesByDateTime(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/GetSortedScreeningsAndMoviesByDateTime`);
+  }
+
+  getAllScreenings(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/GetAllScreenings`);
+  }
+
+  getAllScreeningsWithSeats(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/GetAllScreeningsWithSeats`);
+  }
+
+  getScreeningWithSeatsById(id: string | null): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/GetScreeningWithSeatsById/${id}`);
+  }
+
+  getProductById(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/GetProductById/${id}`);
+  }
+
+  reserveSeat(screeningId: string, seatId: string, username: string) {
+    return this.http
+      .post(`${this.baseUrl}/ReserveSeat/${screeningId}/${seatId}`, { username }, { responseType: 'blob' })
+      .pipe(
+        catchError(error => {
+          console.error('Error:', error);
+          return throwError('An error occurred while reserving the seat.');
+        })
+      );
+  }
+
+  createProductScreeningRelation(productName: string, screeningDate: string, screeningTime: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/CreateProductScreeningRelation`, { productName, screeningDate, screeningTime });
+  }
+
+  deleteProductScreeningRelation(productName: string, scrDate: string, scrTime: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteProductScreeningRelation?productName=${productName}&scrDate=${scrDate}&scrTime=${scrTime}`);
+  }
+
+  deleteScreening(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteScreening/${id}`);
+  }
+
+  deleteScreeningByDateTime(screeningDate: string, screeningTime: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/DeleteScreeningByDateTime?screeningDate=${screeningDate}&screeningTime=${screeningTime}`);
   }
 
   createProductActorRelation(productName: string, actorName: string): Observable<void> {
@@ -55,25 +114,6 @@ export class CatalogService {
 
   deleteProductDirectorRelation(productName: string, directorName: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/DeleteProductDirectorRelation?productName=${productName}&directorName=${directorName}`);
-  }
-
-  searchProducts(name?: string, category?: string): Observable<Product[]> {
-    let url = `${this.baseUrl}/SearchProducts`;
-
-    if(!name){name="none";}
-    if(!category){category="none";}
-
-    if (name || category) {
-      url += '?';
-      if (name) {
-        url += `name=${name}`;
-      }
-      if (category) {
-        url += '&';
-        url += `category=${category}`;
-      }
-    }
-    return this.http.get<Product[]>(url);
   }
 
   createProduct(product: Product): Observable<Product> {

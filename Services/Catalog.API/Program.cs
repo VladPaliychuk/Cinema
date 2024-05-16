@@ -30,6 +30,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();

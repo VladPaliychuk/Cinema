@@ -38,7 +38,27 @@ public class ScreeningRepository : IScreeningRepository
         return await _context.Screenings
             .FirstOrDefaultAsync(s => s.StartDate == startDate && s.StartTime == startTime);
     }
+    
+    public async Task<IEnumerable<Screening>> GetAllWithProductAsync()
+    {
+        return await _context.Screenings.Include(s => s.Product).ToListAsync();
+    }
 
+    public async Task<IEnumerable<Screening>> GetAllScreeningsWithSeatsAsync()
+    {
+        return await _context.Screenings
+            .Include(s => s.Seats)
+            .ToListAsync();
+    }
+    
+    public async Task<Screening?> GetScreeningWithSeatsByIdAsync(Guid screeningId)
+    {
+        return await _context.Screenings
+            .Include(s => s.Seats)
+            .FirstOrDefaultAsync(s => s.Id == screeningId);
+    }
+
+    
     public async Task Create(Screening screening)
     {
         _context.Screenings.Add(screening);

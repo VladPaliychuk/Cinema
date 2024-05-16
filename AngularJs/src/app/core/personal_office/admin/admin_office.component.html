@@ -1,6 +1,59 @@
-<button (click)="create_movie()">Create Movie</button>
+<div class="main-div">
+  <div class="left-half">
+    <button (click)="create_movie()" class="movie-create">Create Movie</button>
 
-<div *ngFor="let product of products">
-  <h2 style="color: white;">{{ product.name }}</h2>
-  <button (click)="delete(product.id)">Delete</button>
+    <div *ngFor="let product of products" class="movie-div">
+      <p [routerLink]="['/movie-edit', product.name]">
+        {{ product.name }}
+      </p>
+      <button [routerLink]="['/movie-edit', product.name]" class="movie-edit">Edit</button>
+      <button (click)="delete_movie(product.id)" class="movie-delete">Delete</button>
+    </div>
+  </div>
+
+  <div class="right-half">
+    <button (click)="toggleCreateUserCard()" class="user-card-create">Create User Card</button>
+
+    <div *ngIf="isCreating" class="edit-card-form">
+      <input style="margin-top: 10px;" [(ngModel)]="newUserCard.userName" placeholder="Username" />
+      <input [(ngModel)]="newUserCard.firstName" placeholder="First Name" />
+      <input [(ngModel)]="newUserCard.lastName" placeholder="Last Name" />
+      <input [(ngModel)]="newUserCard.emailAddress" placeholder="Email Address" />
+      <input [(ngModel)]="newUserCard.addressLine" placeholder="Address Line (not required)" />
+      <input [(ngModel)]="newUserCard.country" placeholder="Country" />
+      <input [(ngModel)]="newUserCard.state" placeholder="State/City" />
+      <input [(ngModel)]="newUserCard.zipCode" placeholder="Zip Code (not required)" />
+      <input [(ngModel)]="newUserCard.bonuses" placeholder="Bonuses" type="number" />
+      <button (click)="createUserCard()" class="save-button">Save</button>
+      <button (click)="toggleCreateUserCard()" class="cancel-button">Cancel</button>
+    </div>
+
+    <div *ngFor="let card of usercards" class="card-div">
+      <div *ngIf="!editMode[card.userName]; else editTemplate">
+        <p style="font-weight: normal; font-size: 30px;">
+          {{ card.userName }} {{ card.firstName }} {{ card.lastName }} {{ card.bonuses }}
+        </p>
+        <p style="font-size: 18px; font-weight: lighter">
+          {{ card.emailAddress }} {{ card.addressLine }} {{ card.country }} {{ card.state }} {{ card.zipCode }}
+        </p>
+        <button (click)="enableEditMode(card)" class="card-edit">Edit</button>
+        <button (click)="delete_card(card.userName)" class="card-delete">Delete</button>
+      </div>
+      <ng-template #editTemplate>
+        <div class="edit-card-form">
+          <input [(ngModel)]="card.userName" placeholder="Username" />
+          <input [(ngModel)]="card.firstName" placeholder="First Name" />
+          <input [(ngModel)]="card.lastName" placeholder="Last Name" />
+          <input [(ngModel)]="card.emailAddress" placeholder="Email Address" />
+          <input [(ngModel)]="card.addressLine" placeholder="Address Line" />
+          <input [(ngModel)]="card.country" placeholder="Country" />
+          <input [(ngModel)]="card.state" placeholder="State" />
+          <input [(ngModel)]="card.zipCode" placeholder="Zip Code" />
+          <input [(ngModel)]="card.bonuses" placeholder="Bonuses" type="number" />
+          <button (click)="saveChanges(card)" class="save-button">Save</button>
+          <button (click)="cancelEdit(card)" class="cancel-button">Cancel</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
 </div>

@@ -1,5 +1,5 @@
 <form [formGroup]="movieForm" (ngSubmit)="createMovie()" class="movie-create-container">
-  <div formGroupName="product">
+  <div formGroupName="product" class="product-form">
     <label>Name: <input formControlName="name" type="text"></label>
     <label>Summary: <input formControlName="summary" type="text"></label>
     <label>Description: <input formControlName="description" type="text"></label>
@@ -9,11 +9,12 @@
     <label>Country: <input formControlName="country" type="text"></label>
     <label>Age Restriction <input formControlName="ageRestriction" type="text"></label>
     <label>Price: <input formControlName="price" type="text"></label>
-  </div>
+  </div> <br>
 
   <div formArrayName="genres">
     <div *ngFor="let genre of genres.controls; let i = index" [formGroupName]="i">
       <label>Genre: <input formControlName="name" type="text"></label>
+      <button type="button" class="discard-button" (click)="discardGenre(i)">Discard</button>
     </div>
     <button (click)="addGenre()">Add Genre</button>
   </div>
@@ -22,6 +23,7 @@
     <div *ngFor="let actor of actors.controls; let i = index" [formGroupName]="i">
       <label>Actor First Name: <input formControlName="firstName" type="text"></label>
       <label>Actor Last Name: <input formControlName="lastName" type="text"></label>
+      <button type="button" class="discard-button" (click)="discardActor(i)">Discard</button>
     </div>
     <button (click)="addActor()">Add Actor</button>
   </div>
@@ -30,6 +32,7 @@
     <div *ngFor="let director of directors.controls; let i = index" [formGroupName]="i">
       <label>Director First Name: <input formControlName="firstName" type="text"></label>
       <label>Director Last Name: <input formControlName="lastName" type="text"></label>
+      <button type="button" class="discard-button" (click)="discardDirector(i)">Discard</button>
     </div>
     <button (click)="addDirector()">Add Director</button>
   </div>
@@ -38,10 +41,13 @@
     <div *ngFor="let screening of screenings.controls; let i = index" [formGroupName]="i">
       <label>Start Time: <input formControlName="startTime" type="text"></label>
       <label>Start Date: <input formControlName="startDate" type="text"></label>
+      <button type="button" class="discard-button" (click)="discardScreenings(i)">Discard</button>
     </div>
     <button (click)="addScreening()">Add Screening</button>
   </div>
 
+  <br>
   <button type="submit">Create Movie</button>
+  <button type="button" class="discard-button" (click)="discardChanges()">Discard ALL changes</button>
   <div *ngIf="successMessage">{{ successMessage }}</div>
 </form>

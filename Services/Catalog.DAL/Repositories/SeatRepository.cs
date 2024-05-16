@@ -26,6 +26,14 @@ public class SeatRepository : ISeatRepository
         return await _context.Seats.ToListAsync();
     }
 
+    public async Task<Seat> GetSeatWithScreeningAsync(Guid seatId)
+    {
+        return await _context.Seats
+            .Include(seat => seat.Screening)
+            .ThenInclude(screening => screening.Product)
+            .FirstOrDefaultAsync(seat => seat.Id == seatId);
+    }
+    
     public async Task Create(Seat seat)
     {
         _context.Seats.Add(seat);

@@ -1,9 +1,80 @@
-.navbar div, .navbar > div {
-  border: 1px solid dark;
+#main-div {
+  border-bottom: 1px solid #76ABAE;
+  height: 70px;
+}
+nav {
+  border-bottom: 1px solid #76ABAE;
+  height: 70px;
+
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+nav > div {
+
+  height:100%;
+
+}
+.center {
+  display: grid;
+  /*grid-template-columns: 1fr auto 1fr;*/
+  width:300px;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  grid-gap: 20px;
+}
+.center>div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:100%;
+  width:100%;
+}
+.center>.left{
+  justify-content: flex-end;
+
+}
+.center>.right{
+  justify-content: flex-start;
+}
+.div-cinema{
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.nav-right{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/*a{
+  color: #9ee3e6;
+}*/
+
+a {
+  font-weight: bold;
+
+  background-image: linear-gradient(
+    to right,
+    #9ee3e6,
+    #37aaaf 50%,
+    #9ee3e6 50%
+  );
+  background-size: 200% 100%;
+  background-position: -100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+a:hover {
+  background-position: 0;
 }
 
 .navbar{
-
-  background-color: #76ABAE;
+  color: #76ABAE;
 }
 

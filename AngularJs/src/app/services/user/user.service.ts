@@ -24,13 +24,6 @@ export class UserService {
     return this.http.post<void>(`${this.apiUrl}/UpdatePassword`, { username, newPassword });
   }
 
-  sendEmail(email: string, subject: string, body: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/SendEmail`, { email, subject, body });
-  }
-
-  sendEmailToAllUsers(subject: string, body: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/SendEmailToAllUsers`, { subject, body });
-  }
 
   getAllUsers(): Observable<User[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetAll`);

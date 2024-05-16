@@ -1,0 +1,25 @@
+<div class="main-div">
+  <div *ngIf="movie" class="movie-details">
+    <h2>{{ movie.name }}</h2>
+    <img [src]="movie.imageFile" alt="Movie Poster" class="movie-poster">
+  </div>
+
+  <div *ngIf="screeningSeats" class="screening-details">
+    <h3>Screening Details</h3>
+    <p>Date: {{ screeningSeats.screening.startDate }}</p>
+    <p>Time: {{ screeningSeats.screening.startTime }}</p>
+  </div>
+
+  <div *ngIf="screeningSeats" class="seats">
+    <h3>Available Seats</h3>
+    <div *ngFor="let seat of screeningSeats.seats" class="seat"
+         (click)="seat.isReserved ? null : confirmReservation(seat.id, screeningSeats.screening.id)">
+
+      <div [ngClass]="{'red': seat.isReserved}">
+        {{ seat.row }}{{ seat.number }}
+      </div>
+
+    </div>
+  </div>
+
+</div>
