@@ -1,0 +1,26 @@
+<div *ngIf="movieScreenings.length > 0" class="main-div">
+  <h2>Screening Catalog</h2>
+  <div *ngFor="let item of movieScreenings" class="screening-item">
+    <div class="product-details">
+      <div class="product-details-data">
+        <h3>{{ item.product.name }}</h3>
+        <p>Duration: {{ item.product.duration }}</p>
+        <p>Age Restriction: {{ item.product.ageRestriction }}</p>
+        <p>Price: {{ item.product.price }}</p>
+      </div>
+
+      <div class="img-div">
+        <img [src]="item.product.imageFile" alt="{{item.product.name}}" />
+      </div>
+    </div>
+
+    <div class="screening-details">
+      <p>{{ item.screening.startDate }}</p>
+      <p>{{ item.screening.startTime }}</p>
+      <button [routerLink]="['/reservation/', item.screening.id]"> Резервація </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="movieScreenings.length === 0">
+  <p>No movie screenings available.</p>
+</div>

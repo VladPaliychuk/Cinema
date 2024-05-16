@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+.main-div {
+  height: 100%;
+  width: 100%;
+
+  color: #e4e4e4;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.movie-div, .card-div{
+
+  margin-top:10px;
+}
+.movie-div > p{
+  font-size: 32px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+.card-div > p{
+  font-size: 32px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+.card-div{
+  margin-left: 10px;
+}
+
+.movie-create, .user-card-create{
+  width: 45em;
+  height: 2.5em;
+  margin-left: 10px;
+  margin-top: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.user-card-create:hover {
+  background-color: #76ABAE;
+}
+
+.movie-create:hover {
+  background-color: #76ABAE;
+}
+
+.movie-edit, .movie-delete, .card-edit, .card-delete{
+  width: 5em;
+  margin-left: 10px;
+  background-color: #73a4aa;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.movie-delete, .card-delete, .cancel-button{
+  background-color: #a47373;
+}
+.movie-delete:hover {
+  background-color: #875c5c;
+}
+.card-delete:hover {
+  background-color: #875c5c;
+}
+.cancel-button:hover {
+  background-color: #875c5c;
+}
+
+button:hover {
+  background-color: #5b8688;
+}
+
+.edit-card-form input {
+  display: block;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.save-button, .cancel-button {
+  margin-left: 10px;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.save-button {
+  background-color: #4CAF50;
+}
+.save-button:hover {
+  background-color: #76ABAE;
+}
+
+

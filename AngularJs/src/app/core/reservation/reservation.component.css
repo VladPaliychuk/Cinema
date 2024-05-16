@@ -1,0 +1,18 @@
+* {
+  color: #EEEEEE;
+}
+
+
+
+.seat > div{
+  background-color: #37aaaf;
+}
+.seat > div:hover{
+  background-color: #1f7a7f;
+}
+.red{
+  background-color: #bc5a5a;
+}
+.red:hover{
+  background-color: #a73a3a;
+}

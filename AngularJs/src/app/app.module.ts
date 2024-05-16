@@ -22,6 +22,9 @@ import {RouterModule} from "@angular/router";
 import {UserCardComponent} from "./services/usercard/usercard.component";
 import { UserOfficeComponent } from './core/personal_office/user/user-office/user-office.component';
 import { EditMovieComponent } from './services/movie/edit-movie/edit-movie.component';
+import {UserCardService} from "./services/usercard/usercard.service";
+import { ScreeningCatalogComponent } from './services/catalog/screening-catalog/screening-catalog.component';
+import { ReservationComponent } from './core/reservation/reservation.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { EditMovieComponent } from './services/movie/edit-movie/edit-movie.compo
     RegistrationComponent,
     UserCardComponent,
     UserOfficeComponent,
-    EditMovieComponent
+    EditMovieComponent,
+    ScreeningCatalogComponent,
+    ReservationComponent
     //BasketComponent
   ],
   imports: [
@@ -50,7 +55,7 @@ import { EditMovieComponent } from './services/movie/edit-movie/edit-movie.compo
     ReactiveFormsModule,
     RouterModule
   ],
-  providers: [CatalogService, MovieService, UserService, CatalogService],
+  providers: [CatalogService, MovieService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

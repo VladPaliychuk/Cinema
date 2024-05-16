@@ -74,7 +74,7 @@ public class CardsController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(UserCardDto), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<UserCardDto>> GetCardByUsername(string username)
-    {
+    { 
         try
         {
             var result = await _cardsRepository.GetCardByUsername(username);
