@@ -17,6 +17,8 @@ export class EditMovieComponent implements OnInit{
   firstname!: string;
   lastname!: string;
   genre!: string;
+  screeningDate!: string;
+  screeningTime!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,7 +70,7 @@ export class EditMovieComponent implements OnInit{
     this.firstname = director.firstName;
     this.lastname = director.lastName;
     this.catalogService.deleteProductDirectorRelation(this.movie.product.name,
-      this.firstname + ' ' + this.lastname).pipe(
+      director.firstName + ' ' + director.lastName).pipe(
       tap(() => {
         console.log('Director deleted');
         const index = this.movie.directors.findIndex(d => d.firstName === this.firstname && d.lastName === this.lastname);
@@ -84,7 +86,6 @@ export class EditMovieComponent implements OnInit{
   }
 
   deleteGenre(genre: any): void {
-    this.genre = genre.name;
     this.catalogService.deleteProductGenreRelation(this.movie.product.name, this.genre).pipe(
       tap(() => {
         console.log('Genre deleted');
@@ -97,6 +98,22 @@ export class EditMovieComponent implements OnInit{
     ).subscribe(
       () => {},
       error => console.error('Error deleting genre:', error)
+    );
+  }
+
+  deleteScreening(screeningDate: string, screeningTime: string): void {
+    this.catalogService.deleteProductScreeningRelation(this.movie.product.name, screeningDate, screeningTime).pipe(
+      tap(() => {
+        console.log('Screening deleted');
+        const index = this.movie.screenings.findIndex(s => s.startDate === screeningDate && s.startTime === screeningTime);
+        if (index > -1) {
+          this.movie.screenings.splice(index, 1);
+        }
+      }),
+      tap(() => this.fetchMovieData())
+    ).subscribe(
+      () => {},
+      error => console.error('Error deleting screening:', error)
     );
   }
 
@@ -141,4 +158,17 @@ export class EditMovieComponent implements OnInit{
       error => console.error('Error adding genre:', error)
     );
   }
+  addScreening(screeningDate: string, screeningTime: string): void {
+    this.catalogService.createProductScreeningRelation(this.movie.product.name, screeningDate, screeningTime).pipe(
+      tap(() => {
+        console.log('Screening added');
+
+      }),
+      tap(() => this.fetchMovieData())
+    ).subscribe(
+      () => {},
+      error => console.error('Error adding screening:', error)
+    );
+  }
+
 }

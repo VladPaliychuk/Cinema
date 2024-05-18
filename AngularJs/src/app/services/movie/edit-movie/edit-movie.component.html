@@ -44,8 +44,14 @@
   <br><br>
   <h3>Screenings:</h3>
   <ul>
-    <li *ngFor="let screening of movie.screenings">{{ screening.startDate }} {{ screening.startTime }}</li>
+    <li *ngFor="let screening of movie.screenings">
+      {{ screening.startDate }} {{ screening.startTime }}
+      <button (click)="deleteScreening(screening.startDate, screening.startTime)">Delete</button>
+    </li>
   </ul>
+  <input [(ngModel)]="screeningDate" placeholder="screeningDate">
+  <input [(ngModel)]="screeningTime" placeholder="screeningTime">
+  <button (click)="addScreening(screeningDate, screeningTime)">Add Screening</button>
 </div>
 <div *ngIf="!movie">
   <p>No movie details available.</p>

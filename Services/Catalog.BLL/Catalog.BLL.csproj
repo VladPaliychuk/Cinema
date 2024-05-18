@@ -15,6 +15,13 @@
       <PackageReference Include="iTextSharp" Version="5.5.13.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.29" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.29" />
+      <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.2-mauipre.1.22102.15" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Resources\timesnewromanpsmt.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

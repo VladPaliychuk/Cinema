@@ -24,6 +24,19 @@ export class ReservationComponent implements OnInit{
     this.catalogService.getScreeningWithSeatsById(id).subscribe(
       screeningSeats => {
         console.log('Screening Seats:', screeningSeats);
+        // Sort the seats
+        screeningSeats.seats.sort((a, b) => {
+          const aRow = parseInt(a.row, 10);
+          const bRow = parseInt(b.row, 10);
+          const aNumber = parseInt(a.number, 10);
+          const bNumber = parseInt(b.number, 10);
+
+          if (aRow === bRow) {
+            return aNumber - bNumber; // If the row is the same, sort by seat number
+          } else {
+            return aRow - bRow; // Otherwise, sort by row
+          }
+        });
         this.screeningSeats = screeningSeats;
         console.log('Screening Seats:', this.screeningSeats);
         if (this.screeningSeats) {

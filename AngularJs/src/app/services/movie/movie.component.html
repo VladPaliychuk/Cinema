@@ -1,39 +1,59 @@
-<div *ngIf="movie" class="movie-container">
-  <h2>{{ movie.product.name }}</h2>
-  <p>{{ movie.product.description }}</p>
-  <p>Release Date: {{ movie.product.releaseDate }}</p>
-  <p>Duration: {{ movie.product.duration }}</p>
-  <p>Country: {{ movie.product.country }}</p>
-  <p>Age Restriction: {{ movie.product.ageRestriction }}</p>
-  <p>Price: {{ movie.product.price }}</p>
+<div *ngIf="movie" class="main-grid">
+  <div class="left-top">
+    <img [src]="movie.product.imageFile" alt="{{ movie.product.name }}">
+  </div>
 
-  <h3>Genres:</h3>
-  <ul>
-    <li *ngFor="let genre of movie.genres">
-      <a [routerLink]="['/movies-by-genre/', genre.name]">{{ genre.name }}</a>
-    </li>
-  </ul>
+  <div class="right-top">
+    <div class="movie-info">
+      <h2>{{ movie.product.name }}</h2>
+      <p>{{ movie.product.description }}</p>
+      <p>Release Date: {{ movie.product.releaseDate }}</p>
+      <p>Duration: {{ movie.product.duration }}</p>
+      <p>Country: {{ movie.product.country }}</p>
+      <p>Age Restriction: {{ movie.product.ageRestriction }}</p>
+      <p>Price: {{ movie.product.price }}</p>
+    </div>
+  </div>
 
-  <h3>Directors:</h3>
-  <ul>
-    <li *ngFor="let director of movie.directors">
-      <a [routerLink]="['/movies-by-director/', director.firstName + ' ' + director.lastName]">{{ director.firstName }} {{ director.lastName }}</a>
-    </li>
-  </ul>
+  <div class="left-bottom">
+    <div class="left-bottom-info-name">
+      Genres:
+    </div>
 
-  <h3>Actors:</h3>
-  <ul>
-    <li *ngFor="let actor of movie.actors">
-      <a [routerLink]="['/movies-by-actor/', actor.firstName + ' ' + actor.lastName]">{{ actor.firstName }} {{ actor.lastName }}</a>
-    </li>
-  </ul>
+      <div *ngFor="let genre of movie.genres" class="left-bottom-info">
+        <a [routerLink]="['/movies-by-genre/', genre.name]">{{ genre.name }}</a>
+      </div>
 
+    <div class="left-bottom-info-name">
+      Directors:
+    </div>
 
-  <h3>Screenings:</h3>
-  <ul>
-    <li *ngFor="let screening of movie.screenings">{{ screening.startDate }} {{ screening.startTime }}</li>
-  </ul>
+      <div *ngFor="let director of movie.directors" class="left-bottom-info">
+        <a [routerLink]="['/movies-by-director/', director.firstName + ' ' + director.lastName]">{{ director.firstName }} {{ director.lastName }}</a>
+      </div>
+
+    <div class="left-bottom-info-name">
+      Actors
+    </div>
+
+      <div *ngFor="let actor of movie.actors" class="left-bottom-info">
+        <a [routerLink]="['/movies-by-actor/', actor.firstName + ' ' + actor.lastName]">{{ actor.firstName }} {{ actor.lastName }}</a>
+      </div>
+  </div>
+
+  <div class="right-bottom">
+    <div class="screenings-container">
+      <div class="screenings-name">
+        Screenings:
+      </div>
+
+      <div *ngFor="let screening of movie.screenings" class="screenings">
+        {{ screening.startDate }} {{ screening.startTime }}
+      </div>
+    </div>
+  </div>
 </div>
+
 <div *ngIf="!movie">
   <p>No movie details available.</p>
 </div>
