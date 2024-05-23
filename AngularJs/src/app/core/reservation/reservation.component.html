@@ -19,7 +19,7 @@
          [style.pointer-events]="seat.isReserved ? 'none' : 'auto'"
          (click)="!seat.isReserved && confirmReservation(seat.id)"
          [ngClass]="{'red': seat.isReserved}">
-      {{ seat.row }}{{ seat.number }}
+      {{ seat.row }}-{{ seat.number }}
     </div>
   </div>
 </div>

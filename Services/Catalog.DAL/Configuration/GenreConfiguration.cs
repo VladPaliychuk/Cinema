@@ -8,9 +8,9 @@ public class GenreConfiguration : IEntityTypeConfiguration<Genre>
 {
     public void Configure(EntityTypeBuilder<Genre> builder)
     {
-        builder.HasKey(g => g.Id); // Set primary key
+        builder.HasKey(g => g.Id); 
 
         builder.Property(g => g.Name)
-            .IsRequired(); // Set constraints for Name
+            .IsRequired(); 
     }
 }

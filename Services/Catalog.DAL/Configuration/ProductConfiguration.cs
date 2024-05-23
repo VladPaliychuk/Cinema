@@ -8,7 +8,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.HasKey(p => p.Id); // Set primary key
+        builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Name)
             .IsRequired()

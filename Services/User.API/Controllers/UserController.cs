@@ -12,7 +12,6 @@ namespace User.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly IEmailService _emailService;
     private readonly IUserService _userService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
@@ -21,12 +20,10 @@ public class UserController : ControllerBase
         IUserRepository userRepository, 
         ILogger<UserController> logger,
         IAuthService authService,
-        IEmailService emailService,
         IUserService userService
         )
     {
         _authService = authService;
-        _emailService = emailService;
         _userService = userService;
         _userRepository = userRepository;
         _logger = logger;

@@ -8,11 +8,11 @@ public class ScreeningConfiguration : IEntityTypeConfiguration<Screening>
 {
     public void Configure(EntityTypeBuilder<Screening> builder)
     {
-        builder.HasKey(s => s.Id); // Set primary key
+        builder.HasKey(s => s.Id); 
 
         builder
-            .HasOne(s => s.Product) // Set relationship with Product
+            .HasOne(s => s.Product) 
             .WithMany(p => p.Screenings)
-            .HasForeignKey(s => s.ProductId); // Set foreign key
+            .HasForeignKey(s => s.ProductId);
     }
 }

@@ -43,7 +43,6 @@ namespace Catalog.API.Controllers
             _screeningRepository = screeningRepository;
         }
         
-        //TODO зробити апдейт метод для резервування
         [HttpGet("GetTakeSkip")]
         public ActionResult Get(int take = 10, int skip = 0, string sortBy = "Id")
         {
@@ -76,8 +75,8 @@ namespace Catalog.API.Controllers
 
         [HttpGet]
         [Route("[action]/{productName}", Name = "GetProductDetails")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<ProductDetails>> GetProductDetails(string productName)
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<ProductDetailsDto>> GetProductDetails(string productName)
         {
             try
             {
@@ -93,12 +92,12 @@ namespace Catalog.API.Controllers
         }
         
         [HttpPost("CreateProductDetail")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> CreateProductDetail([FromBody] ProductDetails productDetails)
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> CreateProductDetail([FromBody] ProductDetailsDto productDetailsDto)
         {
             try
             {
-                await _catalogService.CreateAllRelations(productDetails);
+                await _catalogService.CreateAllRelations(productDetailsDto);
                 return StatusCode(StatusCodes.Status201Created);
             }
             catch (Exception ex)
@@ -229,7 +228,6 @@ namespace Catalog.API.Controllers
         
         [HttpGet("GetScreeningWithSeatsById/{screeningId}")]
         [ProducesResponseType(typeof(ScreeningDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<ScreeningDto>> GetScreeningWithSeatsById(Guid screeningId)
         {
             try
@@ -365,7 +363,7 @@ namespace Catalog.API.Controllers
         
 
         [HttpPost("CreateProductActorRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductActorRelation(string productName, string actorName)
         {
             try
@@ -381,7 +379,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpPost("CreateProductGenreRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductGenreRelation(string productName, string genreName)
         {
             try
@@ -397,7 +395,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpPost("CreateProductDirectorRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductDirectorRelation(string productName, string directorName)
         {
             try
@@ -413,7 +411,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpPost("CreateProductScreeningRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateProductScreeningRelation(string productName, string screeningDate, string screeningTime)
         {
             try
@@ -429,7 +427,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpDelete("DeleteProductScreeningRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductScreeningRelation(string productName, string scrDate, string scrTime)
         {
             try
@@ -445,7 +443,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpDelete("DeleteProductActorRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductActorRelation(string productName, string actorName)
         {
             try
@@ -461,7 +459,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpDelete("DeleteProductGenreRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductGenreRelation(string productName, string genreName)
         {
             try
@@ -477,7 +475,7 @@ namespace Catalog.API.Controllers
         }
         
         [HttpDelete("DeleteProductDirectorRelation")]
-        [ProducesResponseType(typeof(ProductDetails), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ProductDetailsDto), (int)HttpStatusCode.OK)]
         public async Task<ActionResult> DeleteProductDirectorRelation(string productName, string directorName)
         {
             try

@@ -21,10 +21,6 @@ namespace Catalog.DAL.Data
         public DbSet<Director> Directors { get; set; }
         public DbSet<ProductDirector> ProductDirectors { get; set; }
         
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-           //optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=CatalogDatabase;Username=VladPostgres;Password=VladPostgres");
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -71,7 +71,7 @@ public class ProductRepository : IProductRepository
     public async Task<IEnumerable<Product>> GetProducts()
     {
         return await _context.Products.ToListAsync()
-               ?? throw new Exception($"Couldn't retrieve entities Product ");
+               ?? throw new EntityNotFoundException($"Couldn't retrieve entities Product ");
     }
 
     public async Task UpdateProduct(Product product)
@@ -84,5 +84,4 @@ public class ProductRepository : IProductRepository
         _context.Entry(product).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
-
 }

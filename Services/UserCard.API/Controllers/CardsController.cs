@@ -47,9 +47,30 @@ public class CardsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Виникла помилка на сервері.");
         }
     }
+    
+    [HttpGet("GetAllUserCardsWithId")]
+    [ProducesResponseType(typeof(IEnumerable<DAL.Entities.UserCard>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IEnumerable<DAL.Entities.UserCard>>> GetAllUserCardsWithId()
+    {
+        try
+        {
+            var userCards = await _cardsRepository.GetCards();
+            if (userCards == null)
+            {
+                _logger.LogInformation("Отримано пустий список карток користувачів.");
+                return NotFound();
+            }
 
-
-
+            _logger.LogInformation("Отримали всі картки користувачів з бази даних.");
+            return Ok(userCards);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Помилка у методі GetAllUserCards: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Виникла помилка на сервері.");
+        }
+    }
+    
     [HttpGet]
     [Route("[action]/{id}", Name = "GetCardById")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -177,5 +198,29 @@ public class CardsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Помилка на сервері при видаленні картки.");
         }
     }
+    
+    [HttpDelete]
+    [Route("[action]/{id}", Name = "DeleteCardById")]
+    [ProducesResponseType(typeof(DAL.Entities.UserCard), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> DeleteCardById(Guid id)
+    {
+        var cardToDelete = await _cardsRepository.GetCardById(id);
+        if (cardToDelete == null)
+        {
+            _logger.LogInformation($"Картка користувача з ID: {id} не знайдена.");
+            return NotFound();
+        }
 
+        try
+        {
+            await _cardsRepository.DeleteCard(id);
+            _logger.LogInformation($"Картка користувача з ID: {id} була видалена.");
+            return StatusCode(StatusCodes.Status201Created);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Помилка при видаленні картки: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Помилка на сервері при видаленні картки.");
+        }
+    }
 }

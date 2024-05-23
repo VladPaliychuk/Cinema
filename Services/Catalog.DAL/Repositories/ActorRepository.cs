@@ -58,7 +58,7 @@ public class ActorRepository : IActorRepository
         var actor = await _context.Actors.FindAsync(id);
         if (actor == null)
         {
-            throw new Exception($"Actor with id {id} not found.");
+            throw new EntityNotFoundException($"Actor with id {id} not found.");
         }
 
         _context.Actors.Remove(actor);

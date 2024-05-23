@@ -51,6 +51,11 @@ public class UserRepository : IUserRepository
         {
             throw new ArgumentNullException($"User entity must not be null");
         }
+        var users = GetAll();
+        if (users.Result.Any(u => u.Username == user.Username))
+        {
+            throw new Exception($"User with username {user.Username} already exists");
+        }
         user.Id= Guid.NewGuid();
         _context.Set<Entities.User>().Add(user);
         await _context.SaveChangesAsync();

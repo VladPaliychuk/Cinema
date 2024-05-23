@@ -1,6 +1,6 @@
 ﻿namespace Catalog.BLL.DTOs;
 
-public class ProductDetails
+public class ProductDetailsDto
 {
     public ProductDto Product { get; set; }
     public IEnumerable<GenreDto> Genres { get; set; }

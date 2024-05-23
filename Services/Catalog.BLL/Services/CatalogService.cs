@@ -10,8 +10,6 @@ namespace Catalog.BLL.Services;
 
 public class CatalogService : ICatalogService
 {
-    //TODO додати емейл розсилку
-    
     private readonly IMapper _mapper;
     private readonly CatalogContext _context;
     private readonly IProductRepository _productRepository;
@@ -51,7 +49,7 @@ public class CatalogService : ICatalogService
         _productDirectorRepository = productDirectorRepository;
     }
     
-    public async Task<ProductDetails> GetProductDetails(string productName)
+    public async Task<ProductDetailsDto> GetProductDetails(string productName)
     {
         var product = await _productRepository.GetProductByName(productName);
 
@@ -86,7 +84,7 @@ public class CatalogService : ICatalogService
         
         var screenings = await _screeningRepository.GetByProductId(product.Id);
 
-        var productDetails = new ProductDetails
+        var productDetails = new ProductDetailsDto
         {
             Product = _mapper.Map<ProductDto>(product),
             Actors = _mapper.Map<List<ActorDto>>(actors),
@@ -97,26 +95,27 @@ public class CatalogService : ICatalogService
 
         return productDetails;
     }
-    public async Task CreateAllRelations(ProductDetails productDetails)
+    
+    public async Task CreateAllRelations(ProductDetailsDto productDetailsDto)
     {
         var newProduct = new Product //product.Id= Guid.NewGuid() already in method CreateProduct
         {
-            Name = productDetails.Product.Name,
-            Summary = productDetails.Product.Summary,
-            Description = productDetails.Product.Description,
-            ImageFile = productDetails.Product.ImageFile,
-            ReleaseDate = productDetails.Product.ReleaseDate,
-            Duration = productDetails.Product.Duration,
-            Country = productDetails.Product.Country,
-            AgeRestriction = productDetails.Product.AgeRestriction,
-            Price = productDetails.Product.Price
+            Name = productDetailsDto.Product.Name,
+            Summary = productDetailsDto.Product.Summary,
+            Description = productDetailsDto.Product.Description,
+            ImageFile = productDetailsDto.Product.ImageFile,
+            ReleaseDate = productDetailsDto.Product.ReleaseDate,
+            Duration = productDetailsDto.Product.Duration,
+            Country = productDetailsDto.Product.Country,
+            AgeRestriction = productDetailsDto.Product.AgeRestriction,
+            Price = productDetailsDto.Product.Price
         };
 
         await _productRepository.CreateProduct(newProduct);
         
         var product = await _productRepository.GetProductByName(newProduct.Name);
         
-        foreach (var actor in productDetails.Actors)
+        foreach (var actor in productDetailsDto.Actors)
         {
             var actorEntity = await _actorRepository.GetByName(actor.FirstName, actor.LastName);
             if (actorEntity == null)
@@ -139,7 +138,7 @@ public class CatalogService : ICatalogService
             await _productActorRepository.Create(productActor);
         }
 
-        foreach (var director in productDetails.Directors)
+        foreach (var director in productDetailsDto.Directors)
         {
             var directorEntity = await _directorRepository.GetByName(director.FirstName, director.LastName);
             if (directorEntity == null)
@@ -162,7 +161,7 @@ public class CatalogService : ICatalogService
             await _productDirectorRepository.Create(directorProduct);
         }
         
-        foreach(var genre in productDetails.Genres)
+        foreach(var genre in productDetailsDto.Genres)
         {
             var genreEntity = await _genreRepository.GetByName(genre.Name);
             
@@ -185,7 +184,7 @@ public class CatalogService : ICatalogService
             await _productGenreRepository.Create(productGenre);
         }
         
-        foreach(var screening in productDetails.Screenings)
+        foreach(var screening in productDetailsDto.Screenings)
         {
             var newScreening = new Screening
             {
@@ -214,26 +213,26 @@ public class CatalogService : ICatalogService
         }
     }
 
-    public async Task UpdateProductDetails(ProductDetails productDetails)
+    public async Task UpdateProductDetails(ProductDetailsDto productDetailsDto)
 {
-    if (productDetails == null)
+    if (productDetailsDto == null)
     {
-        throw new ArgumentNullException(nameof(productDetails));
+        throw new ArgumentNullException(nameof(productDetailsDto));
     }
-    var product = await _productRepository.GetProductByName(productDetails.Product.Name);
+    var product = await _productRepository.GetProductByName(productDetailsDto.Product.Name);
     if (product == null)
     {
         throw new Exception("Product not found.");
     }
 
-    product.Summary = productDetails.Product.Summary;
-    product.Description = productDetails.Product.Description;
-    product.ImageFile = productDetails.Product.ImageFile;
-    product.ReleaseDate = productDetails.Product.ReleaseDate;
-    product.Duration = productDetails.Product.Duration;
-    product.Country = productDetails.Product.Country;
-    product.AgeRestriction = productDetails.Product.AgeRestriction;
-    product.Price = productDetails.Product.Price;
+    product.Summary = productDetailsDto.Product.Summary;
+    product.Description = productDetailsDto.Product.Description;
+    product.ImageFile = productDetailsDto.Product.ImageFile;
+    product.ReleaseDate = productDetailsDto.Product.ReleaseDate;
+    product.Duration = productDetailsDto.Product.Duration;
+    product.Country = productDetailsDto.Product.Country;
+    product.AgeRestriction = productDetailsDto.Product.AgeRestriction;
+    product.Price = productDetailsDto.Product.Price;
     
     await _productRepository.UpdateProduct(product);
     
@@ -242,7 +241,7 @@ public class CatalogService : ICatalogService
     
     foreach (var pa in existingProductActors)
     {
-        var actor = productDetails.Actors.FirstOrDefault(
+        var actor = productDetailsDto.Actors.FirstOrDefault(
             a => 
             a.FirstName == pa.Actor.FirstName && 
             a.LastName == pa.Actor.LastName);
@@ -256,7 +255,7 @@ public class CatalogService : ICatalogService
     var existingProductDirectors = await _productDirectorRepository.GetByProductId(product.Id.ToString());
     foreach (var pd in existingProductDirectors)
     {
-        var director = productDetails.Directors.FirstOrDefault(a => 
+        var director = productDetailsDto.Directors.FirstOrDefault(a => 
             a.FirstName == pd.Director.FirstName && 
             a.LastName == pd.Director.LastName);
         if (director == null)
@@ -269,7 +268,7 @@ public class CatalogService : ICatalogService
     var existingProductGenres = await _productGenreRepository.GetByProductId(product.Id.ToString());
     foreach (var pg in existingProductGenres)
     {
-        var genre = productDetails.Genres.FirstOrDefault(a => 
+        var genre = productDetailsDto.Genres.FirstOrDefault(a => 
             a.Name == pg.Genre.Name);
         if (genre == null)
         {
@@ -281,7 +280,7 @@ public class CatalogService : ICatalogService
     var existingScreenings = await _screeningRepository.GetByProductId(product.Id);
     foreach (var s in existingScreenings)
     {
-        var screening = productDetails.Screenings.FirstOrDefault(a => 
+        var screening = productDetailsDto.Screenings.FirstOrDefault(a => 
             a.StartTime == s.StartTime && 
             a.StartDate == s.StartDate);
         if (screening == null)
@@ -291,7 +290,7 @@ public class CatalogService : ICatalogService
     }
     
     // Оновлення акторів
-    foreach (var actorDto in productDetails.Actors)
+    foreach (var actorDto in productDetailsDto.Actors)
     {
         var actor = await _actorRepository.GetByName(actorDto.FirstName, actorDto.LastName);
         if (actor == null)
@@ -318,7 +317,7 @@ public class CatalogService : ICatalogService
     }
     
     // Оновлення режисерів
-    foreach (var directorDto in productDetails.Directors)
+    foreach (var directorDto in productDetailsDto.Directors)
     {
         var director = await _directorRepository.GetByName(directorDto.FirstName, directorDto.LastName);
         if(director == null)
@@ -345,7 +344,7 @@ public class CatalogService : ICatalogService
     }
     
     // Оновлення жанрів
-    foreach (var genreDto in productDetails.Genres)
+    foreach (var genreDto in productDetailsDto.Genres)
     {
         var genre = await _genreRepository.GetByName(genreDto.Name);
         if (genre == null)
@@ -371,7 +370,7 @@ public class CatalogService : ICatalogService
     }
     
     // Оновлення сеансів
-    foreach (var screeningDto in productDetails.Screenings)
+    foreach (var screeningDto in productDetailsDto.Screenings)
     {
         var screening = await _screeningRepository.GetByDateTime(screeningDto.StartDate, screeningDto.StartTime);
         if (screening == null)
@@ -395,7 +394,6 @@ public class CatalogService : ICatalogService
 
     await _context.SaveChangesAsync();
 }
-
 
     public async Task CreateProductActorRelation(string productName, string actorName)
     {

@@ -49,14 +49,15 @@ export class RegistrationComponent {
 
     if (passwordLength < 8) {
       this.passwordStrength = 'small';
-    } else if (passwordLength > 30) {
-      this.passwordStrength = 'too big';
-    } else if (/[a-zA-Z]/.test(password) && !/[0-9]/.test(password) && !/\W|_/.test(password)) {
+    }  else if (/[a-zA-Z]/.test(password) && !/[0-9]/.test(password) && !/\W|_/.test(password)) {
       this.passwordStrength = 'weak';
     } else if (/[a-zA-Z]/.test(password) && /[0-9]/.test(password) && !/\W|_/.test(password)) {
       this.passwordStrength = 'medium';
     } else if (/[a-zA-Z]/.test(password) && /[0-9]/.test(password) && /\W|_/.test(password)) {
       this.passwordStrength = 'strong';
+    }
+    if (passwordLength > 30) {
+      this.passwordStrength = 'big';
     }
   }
 }

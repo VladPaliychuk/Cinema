@@ -5,9 +5,9 @@ namespace Catalog.BLL.Services.Interfaces;
 
 public interface ICatalogService
 {
-    Task<ProductDetails> GetProductDetails(string productName);
-    Task CreateAllRelations(ProductDetails productDetails);
-    Task UpdateProductDetails(ProductDetails productDetails);
+    Task<ProductDetailsDto> GetProductDetails(string productName);
+    Task CreateAllRelations(ProductDetailsDto productDetailsDto);
+    Task UpdateProductDetails(ProductDetailsDto productDetailsDto);
     Task CreateProductActorRelation(string productName, string actorName);
     Task DeleteProductActorRelation(string productName, string actorName);
     Task CreateProductGenreRelation(string productName, string genreName);

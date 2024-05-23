@@ -58,7 +58,7 @@ public class DirectorRepository : IDirectorRepository
         var director = await _context.Directors.FindAsync(id);
         if (director == null)
         {
-            throw new Exception($"Actor with id {id} not found.");
+            throw new EntityNotFoundException($"Actor with id {id} not found.");
         }
 
         _context.Directors.Remove(director);

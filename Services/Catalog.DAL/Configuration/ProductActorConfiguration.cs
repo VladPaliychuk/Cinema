@@ -11,13 +11,13 @@ public class ProductActorConfiguration : IEntityTypeConfiguration<ProductActor>
         builder.HasKey(pa => new { pa.ProductId, pa.ActorId }); 
         
         builder
-            .HasOne(pa => pa.Product) // Set relationship with Product
+            .HasOne(pa => pa.Product) 
             .WithMany(p => p.ProductActors)
-            .HasForeignKey(pa => pa.ProductId); // Set foreign key
+            .HasForeignKey(pa => pa.ProductId); 
         
         builder
-            .HasOne(pa => pa.Actor) // Set relationship with Actor
+            .HasOne(pa => pa.Actor) 
             .WithMany(a => a.ProductActors)
-            .HasForeignKey(pa => pa.ActorId); // Set foreign key
+            .HasForeignKey(pa => pa.ActorId); 
     }
 }

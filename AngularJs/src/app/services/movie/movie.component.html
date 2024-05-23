@@ -44,11 +44,15 @@
   <div class="right-bottom">
     <div class="screenings-container">
       <div class="screenings-name">
-        Screenings:
+        <h5>
+          Screenings:
+        </h5>
       </div>
 
-      <div *ngFor="let screening of movie.screenings" class="screenings">
-        {{ screening.startDate }} {{ screening.startTime }}
+      <div class="screenings">
+        <div *ngFor="let screening of movie.screenings" class="screening" [routerLink]="['/reservation/',screening.id]">
+          <div>{{ screening.startDate }} {{ screening.startTime }}</div>
+        </div>
       </div>
     </div>
   </div>

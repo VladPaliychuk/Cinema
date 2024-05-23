@@ -8,16 +8,16 @@ public class ProductDirectorConfiguration : IEntityTypeConfiguration<ProductDire
 {
     public void Configure(EntityTypeBuilder<ProductDirector> builder)
     {
-        builder.HasKey(pd => new { pd.ProductId, pd.DirectorId }); // Set primary key
+        builder.HasKey(pd => new { pd.ProductId, pd.DirectorId }); 
 
         builder
-            .HasOne(pd => pd.Product) // Set relationship with Product
+            .HasOne(pd => pd.Product) 
             .WithMany(p => p.ProductDirectors)
-            .HasForeignKey(pd => pd.ProductId); // Set foreign key
+            .HasForeignKey(pd => pd.ProductId); 
 
         builder
-            .HasOne(pd => pd.Director) // Set relationship with Director
+            .HasOne(pd => pd.Director)
             .WithMany(d => d.ProductDirectors)
-            .HasForeignKey(pd => pd.DirectorId); // Set foreign key
+            .HasForeignKey(pd => pd.DirectorId); 
     }
 }

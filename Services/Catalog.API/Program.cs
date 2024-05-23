@@ -13,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-//.Services.AddCors();
-
 builder.Services.AddDbContext<CatalogContext>(options =>
      options.UseNpgsql(builder.Configuration.GetConnectionString("CatalogDb")));
 

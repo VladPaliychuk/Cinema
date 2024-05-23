@@ -49,3 +49,29 @@ a{
 a:hover{
   color: #9ee3e6;
 }
+.screenings-container{
+  margin-top: 12px;
+
+  display: grid;
+  grid-template-rows: 30px auto;
+
+}
+.screenings{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+
+  align-content: stretch;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+.screenings > div{
+  margin-top: 15px;
+  padding: 18px;
+  background-color: #1f7a7f;
+  border-radius: 10px;
+}
+.screenings > div:hover{
+  background-color: #1c3e40;
+}

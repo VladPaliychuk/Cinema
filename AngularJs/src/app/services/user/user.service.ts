@@ -24,7 +24,6 @@ export class UserService {
     return this.http.post<void>(`${this.apiUrl}/UpdatePassword`, { username, newPassword });
   }
 
-
   getAllUsers(): Observable<User[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetAll`);
   }

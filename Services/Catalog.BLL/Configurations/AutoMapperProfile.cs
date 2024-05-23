@@ -59,6 +59,4 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Screening, opt => opt.MapFrom(src => src))
             .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Product));
     }
-    
-    
 }
